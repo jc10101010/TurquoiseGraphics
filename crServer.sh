@@ -1,0 +1,3 @@
+find -name "*.java" > javafiles.txt
+javac @javafiles.txt
+java -cp "src" src/multiplayer/networking/server/MPServer.java
