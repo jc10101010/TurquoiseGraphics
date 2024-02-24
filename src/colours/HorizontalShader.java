@@ -9,7 +9,7 @@ import objects.Vertex;
 public class HorizontalShader extends ColourShader{
     private Color colour; 
     private float axisAdjust = 0.4f;
-    private float inputMult = 1.5f;
+    private float inputMult = 0.5f;
     
     public HorizontalShader (Color colour) {
         this.colour = colour;
