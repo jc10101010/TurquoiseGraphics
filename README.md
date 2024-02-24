@@ -1,4 +1,4 @@
-# Multiplayer Graphics - combining both features into a 3D demo
+# Turquoise Graphics - a reusable graphics engine for Java
 
 A 3D multiplayer test using self made graphics package as well as self made UDP protocall.
 
