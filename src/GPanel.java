@@ -38,21 +38,18 @@ public class GPanel extends JPanel{
         //Fills background with black
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-
         //Tick the game
         game.tick();
-        
         //Draw the current state of the scene to the GPanel screen
         drawSceneToScreen(g);
     }
 
-    //This method draws the scene to the screen 
     private void drawSceneToScreen(Graphics g) {
-
-        Triangle2D[] trianglesToDisplay = scene.renderScene();
+        g.setFont(font);
+        scene.renderScene();
+        Triangle2D[] trianglesToDisplay = scene.getRenderedTriangles();
         Color[] colours = scene.getColours();
         String[] names = scene.getNames();
-
         for (int index = 0; index < scene.getCount(); index++) {
             if (trianglesToDisplay[index] != null) {
                 outlineTriangle(trianglesToDisplay[index], outline, g);

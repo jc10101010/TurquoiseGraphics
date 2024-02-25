@@ -1,29 +1,34 @@
 package core;
 
-import java.awt.Color;
-import java.util.ArrayList;
-
 import colours.ColourShader;
 import events.CameraEvent;
 import objects.Triangle;
 import objects.Triangle2D;
 import objects.Vertex;
 import objects.Vertex2D;
+import java.awt.Color;
+import java.util.ArrayList;
 
 /*
  * The Scene object has RenderObjects in it.
  */
 
 public class Scene {
+
+    //Parallel Arrays
     private Triangle[] triangles; //The array of all triangles in the scene
     private ColourShader[] colours; //The array of the colours of each triangle in the scene
     private String[] objectNames; //The array of the object names of each triangle in the scene
+
     private Triangle2D[] triangles2DRendered; //The array of all rendered triangles in the scene
+    private Color[] finalColours; //The array of all rendered triangles in the scene
+
     private int triangleCount; //The number of triangles in the scene
+
     private ArrayList<RenderObject> objects = new ArrayList<>(); //The arraylist of objects in the scene. Easy to add more.
     private ArrayList<CameraEvent> cameraEvents = new ArrayList<>(); //The arraylist of cameraEvents. Easy to add more.
 
-    private Vertex camPos = new Vertex(-3, -3, 3); //Camera position
+    private Vertex camPos = new Vertex(0, 0, 0); //Camera position
     private Vertex screenPosRel = new Vertex(0, 0, 3.8f); //Screen relative to camera
     private Vertex camRotation = new Vertex(0, 0, 0); //Camera rotation
     private Vertex c = new Vertex(0, 0, 0); //The vertex of cos of camera rotation
@@ -32,51 +37,46 @@ public class Scene {
     //Constructs the Scene object
     public Scene(ArrayList<RenderObject> objects) {
         this.objects = objects;
-        //Sets up all the arrays
-        createArrays();
+        recreateArrays();
     }
 
-    //Renders the scene as it currently is into triangle2d
-    public Triangle2D[] renderScene() {
+    //Renders the scene as it currently is
+    public void renderScene() {
         followCameraEvents();
-        reloadObjectsTriangles();
-        sortTrianglesForRendering();
         generateCameraRot();
-        int index = 0;
-        for (Triangle triangle : triangles) {
-            triangles2DRendered[index] = renderTriangle(triangle);
-            index += 1;
-        }
-        return triangles2DRendered;
+        sortTrianglesForRendering();
+        renderTriangles();
     }
 
     //This method follows along with the list of camera events
     private void followCameraEvents() {
         if (cameraEvents.size() != 0) {
             CameraEvent currentEvent = cameraEvents.get(0);
+            //If event has not started
             if (currentEvent.getStarted() == false) {
+                //Start it
                 currentEvent.startTimer(camPos, camRotation);
             }
+
+            //Set values for current event
             camPos = currentEvent.calcCamPosition();
             camRotation = currentEvent.calcCamRotation();
             
+            //Remove the event if done
             if (cameraEvents.get(0).getDone()) {
                 cameraEvents.remove(0);
             }
         }
     }
 
-    //This method reloads the triangles of the objects as they may have moved
-    private void reloadObjectsTriangles() {
-        int tIndex = 0;
-        for (RenderObject object : objects) {
-            for (Triangle triangle : object.getAdjustedTriangles()) {
-                triangles[tIndex] = triangle;
-                colours[tIndex] = object.getColour();
-                objectNames[tIndex] = object.getName();
-                tIndex += 1;
-            }
-        }
+    //This method generates the rotation vertices for math later
+    private void generateCameraRot() {
+        s.x = (float) Math.sin(camRotation.x);
+        s.y = (float) Math.sin(camRotation.y);
+        s.z = (float) Math.sin(camRotation.z);
+        c.x = (float) Math.cos(camRotation.x);
+        c.y = (float) Math.cos(camRotation.y);
+        c.z = (float) Math.cos(camRotation.z);
     }
 
     //This method sorts all the triangles in the scene based on their distance from the camera
@@ -115,14 +115,18 @@ public class Scene {
         }
     }
 
-    //This method generates the rotation vertices for math later
-    private void generateCameraRot() {
-        s.x = (float) Math.sin(camRotation.x);
-        s.y = (float) Math.sin(camRotation.y);
-        s.z = (float) Math.sin(camRotation.z);
-        c.x = (float) Math.cos(camRotation.x);
-        c.y = (float) Math.cos(camRotation.y);
-        c.z = (float) Math.cos(camRotation.z);
+    //This method renders the triangles that have been sorted
+    private void renderTriangles() {
+        triangles2DRendered = new Triangle2D[triangleCount];
+        finalColours = new Color[triangleCount];
+
+        int index = 0;
+        for (Triangle triangle : triangles) {
+            triangles2DRendered[index] = renderTriangle(triangle);
+            finalColours[index] = colours[index].shadeBasedOnTriangle(triangles[index]);
+
+            index += 1;
+        }
     }
     
     //This function takes a triangle and turns it into 2D
@@ -172,13 +176,14 @@ public class Scene {
         return (v1d + v2d + v3d) / 3.0f;
     }
 
-    //This function generates all the colours of the triangles based on the shader 
+    //This function returns an array of all the triangles2d
+    public Triangle2D[] getRenderedTriangles() {
+        return triangles2DRendered;
+    }
+
+    //This function returns an array of all the colours
     public Color[] getColours() {
-        Color[] newColours = new Color[triangleCount];
-        for (int index = 0; index < triangleCount; index++) {
-            newColours[index] = colours[index].shadeBasedOnTriangle(triangles[index]);
-        }
-        return newColours;
+        return finalColours;
     }
 
     //This function returns an array of all the names of the objects
@@ -195,17 +200,17 @@ public class Scene {
     //This method adds an object to the objects in the scene
     public void addObject(RenderObject objectToAdd) {
         objects.add(objectToAdd);
-        createArrays();
+        recreateArrays();
     }
 
     //This method sets the list of objects in the scene
     public void setObjects(ArrayList<RenderObject> objectsToSet) {
         objects = objectsToSet;
-        createArrays();
+        recreateArrays();
     }
 
     //This method resets the arrays when a new object is added
-    private void createArrays() {
+    private void recreateArrays() {
         int totalTCount = 0;
         for (RenderObject object : objects) {
             totalTCount += object.getTCount();
@@ -216,6 +221,20 @@ public class Scene {
         this.colours = new ColourShader[totalTCount];
         this.objectNames = new String[totalTCount];
         this.triangleCount = totalTCount;
+    }
+
+    //This method reloads the triangles of the objects as they may have moved
+    public void reloadObjectsTriangles() {
+        int tIndex = 0;
+        for (RenderObject object : objects) {
+            for (Triangle triangle : object.getAdjustedTriangles()) {
+                //Load the triangles of the object
+                triangles[tIndex] = triangle;
+                colours[tIndex] = object.getColour();
+                objectNames[tIndex] = object.getName();
+                tIndex += 1;
+            }
+        }
     }
 
     //This method adds a new cameraEvent to the list of cameraEvents

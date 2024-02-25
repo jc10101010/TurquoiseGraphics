@@ -27,7 +27,7 @@ public class Game {
     }
 
     public void tick() {
-        playerPosition.z += 0.04;
+        playerPosition.z += 0.1;
         renderScene.setCamPos(playerPosition);
     }
 }
