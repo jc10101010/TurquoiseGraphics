@@ -44,29 +44,17 @@ public class RenderObject {
         for (int i = 0; i < tCount; i++) {
             adjustedTriangles[i] = new Triangle(new Vertex(0, 0, 0), new Vertex(0, 0, 0), new Vertex(0, 0, 0));
         }
-        calculateAdjustedTriangles();
+        adjustTriangles();
         return adjustedTriangles;
     }
     
     //This method calculates the adjusted & scaled positions of all triangles
-    private void calculateAdjustedTriangles() {
+    private void adjustTriangles() {
         for (int index = 0; index < tCount; index++){
             RenderObject.scale(adjustedTriangles[index], triangles[index], scale);
             RenderObject.adjust(adjustedTriangles[index], triangles[index] , position);
         }
     }
-
-    //This function returns the adjusted & scaled positions of all vertices
-    public Vertex[] getAdjustedVertices() {
-        Vertex[] adjustedVertices =  new Vertex[vertices.length];
-        for (int index = 0; index < vertices.length; index++){
-            Vertex scaled = Vertex.multiply(vertices[index], scale);
-            Vertex moved = Vertex.add(scaled, position);
-            adjustedVertices[index] = moved;
-        }
-        return adjustedVertices;
-    }
-
 
     //Normal getters
     public String getName() {
@@ -85,39 +73,35 @@ public class RenderObject {
         return tCount;
     }
 
-    public Triangle[] getTriangles() {
-        return triangles;
-    }
-
     public ColourShader getColour() {
         return colourShader;
     }
 
+
     //Normal setters
     public void setPosition(Vertex newPosition) {
-        calculateAdjustedTriangles();
+        adjustTriangles();
         this.position = newPosition;
     }
 
     public void alterPosition(Vertex alteration) {
-        calculateAdjustedTriangles();
+        adjustTriangles();
         this.position = Vertex.add(position, alteration);
     }
 
     public void setScale(Vertex newScale) {
-        calculateAdjustedTriangles();
+        adjustTriangles();
         this.scale = newScale;
     }
 
     public void alterScale(Vertex alteration) {
-        calculateAdjustedTriangles();
+        adjustTriangles();
         this.scale = Vertex.add(scale, alteration);
     }
 
     public void setColour(ColourShader colourShader) {
         this.colourShader = colourShader;
     }
-
 
     //This static method scales a triangle by some vertex 
     public static void scale(Triangle tAfter, Triangle tBefore, Vertex scale) {

@@ -21,7 +21,7 @@ public class Scene {
     private String[] objectNames; //The array of the object names of each triangle in the scene
 
     private Triangle2D[] triangles2DRendered; //The array of all rendered triangles in the scene
-    private Color[] finalColours; //The array of all rendered triangles in the scene
+    private Color[] finalColours; //The array of all rendered colours in the scene
 
     private int triangleCount; //The number of triangles in the scene
 
