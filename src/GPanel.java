@@ -29,7 +29,7 @@ public class GPanel extends JPanel{
     //This constructor sets up game for rendering
     public GPanel() {  
         scene = new Scene(new ArrayList<RenderObject> (Arrays.asList()));
-        game = new Game(scene);
+        game = new Game(scene, this);
     }
 
     //This method is called every "frame" by the GFrame class when it refreshes and repaints
