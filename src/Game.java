@@ -38,8 +38,12 @@ public class Game {
         scene.setObjects(enemies);
         
         plane  = RenderObject.loadObject("data/plane.obj", "enemy", new InverseSqrShadow(new Color(255, 0, 0), scene), new Vertex(0,0,0));
-        plane.setScale(new Vertex(3, 3, 3));
+        RenderObject plane2  = RenderObject.loadObject("data/plane.obj", "enemy", new InverseSqrShadow(new Color(255, 0, 0), scene), new Vertex(0,4f,0));
+        float planeScale = 20;
+        plane.setScale(new Vertex(planeScale, planeScale, planeScale));
+        plane2.setScale(new Vertex(planeScale, planeScale, planeScale));
         scene.addObject(plane);
+        scene.addObject(plane2);
         renderScene = scene;
     }
 
@@ -57,51 +61,7 @@ public class Game {
     }
 
     private void setKeyListeners() {
-        Toolkit.getDefaultToolkit().addAWTEventListener(new AWTEventListener() {
-
-            @Override
-            public void eventDispatched(AWTEvent event) {
-                if (event instanceof KeyEvent) {
-                    KeyEvent ke = (KeyEvent) event;
-                    boolean released = false;
-                    switch (ke.getID()) {
-                        case KeyEvent.KEY_PRESSED:
-                            break;
-                        case KeyEvent.KEY_RELEASED:
-                            released = true;
-                            break;
-                    }
-                    switch (ke.getKeyCode()) {
-                        case KeyEvent.VK_UP:
-                            moveDir.z = 1;
-                            if (released) {
-                                moveDir.z = 0;
-                            }
-                            break;
-                        case KeyEvent.VK_DOWN:
-                            moveDir.z = -1;
-                            if (released) {
-                                moveDir.z = 0;
-                            }
-                            break;
-                        case KeyEvent.VK_LEFT:
-                            moveDir.x = -1;
-                            if (released) {
-                                moveDir.x = 0;
-                            }
-                            break;
-                        case KeyEvent.VK_RIGHT:
-                            moveDir.x = 1;
-                            if (released) {
-                                moveDir.x = 0;
-                            }
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            }
-        }, AWTEvent.KEY_EVENT_MASK);
+        
     }
 }
 
