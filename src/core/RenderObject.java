@@ -1,6 +1,5 @@
 package core;
 
-
 import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -18,14 +17,16 @@ import objects.Vertex;
 public class RenderObject {
     
     private String name;
+    private Vertex scale;
+    private Vertex position;
+    private ColourShader colourShader;
+
     private Triangle[] triangles;
     private Triangle[] adjustedTriangles;
     private Vertex[] vertices;
-    private Vertex scale;
-    private ColourShader colourShader;
+    
     private int tCount;
-    private Vertex position;
-
+    
     //Constructor that initializes the object
     public RenderObject(String name, Triangle[] triangles, Vertex[] vertices, Vertex position, Vertex scale, ColourShader colourShader) {
         this.name = name;
@@ -39,7 +40,10 @@ public class RenderObject {
     }
 
     //This function returns the adjusted & scaled positions of all triangles
-    public Triangle[] getAdjustedTriangles() {
+    public Triangle[] loadTriangles() {
+        for (int i = 0; i < tCount; i++) {
+            adjustedTriangles[i] = new Triangle(new Vertex(0, 0, 0), new Vertex(0, 0, 0), new Vertex(0, 0, 0));
+        }
         calculateAdjustedTriangles();
         return adjustedTriangles;
     }
@@ -47,8 +51,8 @@ public class RenderObject {
     //This method calculates the adjusted & scaled positions of all triangles
     private void calculateAdjustedTriangles() {
         for (int index = 0; index < tCount; index++){
-            Triangle scaled = RenderObject.scale(triangles[index], scale);
-            adjustedTriangles[index] = RenderObject.adjust(scaled , position);
+            RenderObject.scale(adjustedTriangles[index], triangles[index], scale);
+            RenderObject.adjust(adjustedTriangles[index], triangles[index] , position);
         }
     }
 
@@ -91,18 +95,22 @@ public class RenderObject {
 
     //Normal setters
     public void setPosition(Vertex newPosition) {
+        calculateAdjustedTriangles();
         this.position = newPosition;
     }
 
     public void alterPosition(Vertex alteration) {
+        calculateAdjustedTriangles();
         this.position = Vertex.add(position, alteration);
     }
 
     public void setScale(Vertex newScale) {
+        calculateAdjustedTriangles();
         this.scale = newScale;
     }
 
     public void alterScale(Vertex alteration) {
+        calculateAdjustedTriangles();
         this.scale = Vertex.add(scale, alteration);
     }
 
@@ -112,19 +120,23 @@ public class RenderObject {
 
 
     //This static method scales a triangle by some vertex 
-    public static Triangle scale(Triangle t, Vertex scale) {
-        Vertex v1new = Vertex.multiply(t.v1, scale);
-        Vertex v2new = Vertex.multiply(t.v2, scale);
-        Vertex v3new = Vertex.multiply(t.v3, scale);
-        return new Triangle(v1new, v2new, v3new);
+    public static void scale(Triangle tAfter, Triangle tBefore, Vertex scale) {
+        Vertex v1new = Vertex.multiply(tBefore.v1, scale);
+        Vertex v2new = Vertex.multiply(tBefore.v2, scale);
+        Vertex v3new = Vertex.multiply(tBefore.v3, scale);
+        tAfter.v1 = v1new;
+        tAfter.v2 = v2new;
+        tAfter.v3 = v3new;
     }
 
     //This static method adjusts a triangle by some vertex 
-    public static Triangle adjust(Triangle t, Vertex adjustment) {
-        Vertex v1new = Vertex.add(t.v1, adjustment);
-        Vertex v2new = Vertex.add(t.v2, adjustment);
-        Vertex v3new = Vertex.add(t.v3, adjustment);
-        return new Triangle(v1new, v2new, v3new);
+    public static void adjust(Triangle tAfter, Triangle tBefore, Vertex adjustment) {
+        Vertex v1new = Vertex.add(tBefore.v1, adjustment);
+        Vertex v2new = Vertex.add(tBefore.v2, adjustment);
+        Vertex v3new = Vertex.add(tBefore.v3, adjustment);
+        tAfter.v1 = v1new;
+        tAfter.v2 = v2new;
+        tAfter.v3 = v3new;
     }
 
     //This static method loads in a obj file and parses it into a series of triangles

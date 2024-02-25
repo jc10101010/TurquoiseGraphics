@@ -201,12 +201,14 @@ public class Scene {
     public void addObject(RenderObject objectToAdd) {
         objects.add(objectToAdd);
         recreateArrays();
+        reloadObjectsTriangles();
     }
 
     //This method sets the list of objects in the scene
     public void setObjects(ArrayList<RenderObject> objectsToSet) {
         objects = objectsToSet;
         recreateArrays();
+        reloadObjectsTriangles();
     }
 
     //This method resets the arrays when a new object is added
@@ -227,7 +229,7 @@ public class Scene {
     public void reloadObjectsTriangles() {
         int tIndex = 0;
         for (RenderObject object : objects) {
-            for (Triangle triangle : object.getAdjustedTriangles()) {
+            for (Triangle triangle : object.loadTriangles()) {
                 //Load the triangles of the object
                 triangles[tIndex] = triangle;
                 colours[tIndex] = object.getColour();
