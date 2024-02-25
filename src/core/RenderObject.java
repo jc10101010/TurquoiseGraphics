@@ -37,13 +37,13 @@ public class RenderObject {
         this.colourShader = colourShader;
         this.tCount = triangles.length;
         this.position = position;
+        for (int i = 0; i < tCount; i++) {
+            adjustedTriangles[i] = new Triangle(new Vertex(0, 0, 0), new Vertex(0, 0, 0), new Vertex(0, 0, 0));
+        }
     }
 
     //This function returns the adjusted & scaled positions of all triangles
     public Triangle[] loadTriangles() {
-        for (int i = 0; i < tCount; i++) {
-            adjustedTriangles[i] = new Triangle(new Vertex(0, 0, 0), new Vertex(0, 0, 0), new Vertex(0, 0, 0));
-        }
         adjustTriangles();
         return adjustedTriangles;
     }
@@ -52,7 +52,7 @@ public class RenderObject {
     private void adjustTriangles() {
         for (int index = 0; index < tCount; index++){
             RenderObject.scale(adjustedTriangles[index], triangles[index], scale);
-            RenderObject.adjust(adjustedTriangles[index], triangles[index] , position);
+            RenderObject.adjust(adjustedTriangles[index], adjustedTriangles[index] , position);
         }
     }
 
@@ -80,23 +80,23 @@ public class RenderObject {
 
     //Normal setters
     public void setPosition(Vertex newPosition) {
-        adjustTriangles();
         this.position = newPosition;
+        adjustTriangles();
     }
 
     public void alterPosition(Vertex alteration) {
-        adjustTriangles();
         this.position = Vertex.add(position, alteration);
+        adjustTriangles();
     }
 
     public void setScale(Vertex newScale) {
-        adjustTriangles();
         this.scale = newScale;
+        adjustTriangles();
     }
 
     public void alterScale(Vertex alteration) {
-        adjustTriangles();
         this.scale = Vertex.add(scale, alteration);
+        adjustTriangles();
     }
 
     public void setColour(ColourShader colourShader) {

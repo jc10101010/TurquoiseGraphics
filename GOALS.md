@@ -1,6 +1,7 @@
 Aims to improve project:
 
-    - Refactor code base
+    - Add input
+    - Add rotation of movement directions
     - Allow for object rotation
     - Add feature to rotate a vertex by camera rotation
     - Improve sorting algorithm

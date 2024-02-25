@@ -6,8 +6,8 @@ public class GFrame extends JFrame
         //Create new frame and update it
         GFrame frame = new GFrame();
         while (true) {
-            frame.update();
-            Thread.sleep(5);
+            frame.update(); 
+            //Thread.sleep(5);
         }
     }
 

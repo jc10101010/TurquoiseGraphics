@@ -34,6 +34,7 @@ public class Scene {
     private Vertex c = new Vertex(0, 0, 0); //The vertex of cos of camera rotation
     private Vertex s = new Vertex(0, 0, 0); //The vertex of sin of camera rotation
 
+
     //Constructs the Scene object
     public Scene(ArrayList<RenderObject> objects) {
         this.objects = objects;
@@ -77,6 +78,7 @@ public class Scene {
         c.x = (float) Math.cos(camRotation.x);
         c.y = (float) Math.cos(camRotation.y);
         c.z = (float) Math.cos(camRotation.z);
+
     }
 
     //This method sorts all the triangles in the scene based on their distance from the camera
@@ -158,7 +160,6 @@ public class Scene {
         float dY = s.x * (c.y * z + s.y * (s.z * y + c.z * x)) + c.x * (c.z * y - s.z * x);
         float dZ = c.x * (c.y * z + s.y * (s.z * y + c.z * x)) - s.x * (c.z * y - s.z * x);
         //Math ended
-
         if (dZ <= 0) { 
             return null;
         }
