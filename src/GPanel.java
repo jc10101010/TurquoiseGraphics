@@ -14,11 +14,11 @@ import java.awt.Font;
 
 public class GPanel extends JPanel{
 
-    private final int SCREEN_WIDTH = 700;
-    private final int SCREEN_HEIGHT = 700;
+    private final int SCREEN_WIDTH;
+    private final int SCREEN_HEIGHT;
 
-    private float GraphicsRatio = 0.5f; //Ratio that dodecahedrom takes up on the screen
-    private float verticalGraphicsRatio = GraphicsRatio * -1; //Flips the dodecahedron vertically as it is mapped upside down
+    private float graphicsRatio = 0.5f; //Ratio that dodecahedrom takes up on the screen
+    private float verticalGraphicsRatio = graphicsRatio * -1; //Flips the dodecahedron vertically as it is mapped upside down
 
     private Scene scene;
     private Color outline = Color.BLACK; //This is the colour that swing draws the outline of all objects
@@ -27,7 +27,9 @@ public class GPanel extends JPanel{
     private Game game;
 
     //This constructor sets up game for rendering
-    public GPanel() {  
+    public GPanel(int w, int h) { 
+        SCREEN_WIDTH = w;
+        SCREEN_HEIGHT = h;
         scene = new Scene(new ArrayList<RenderObject> (Arrays.asList()));
         game = new Game(scene, this);
     }
@@ -64,7 +66,7 @@ public class GPanel extends JPanel{
         float[] yPoints = triangle2d.yValues();
 
         g.setColor(colour);
-        g.drawPolygon(fitAxisToScreen(xPoints, GraphicsRatio), fitAxisToScreen(yPoints, verticalGraphicsRatio), 3);
+        g.drawPolygon(fitAxisToScreen(xPoints, false), fitAxisToScreen(yPoints, true), 3);
     }
 
     //This method draws an filled of the triangle2d as scaled to the screen
@@ -73,21 +75,27 @@ public class GPanel extends JPanel{
         float[] yPoints = triangle2d.yValues();
 
         g.setColor(colour);
-        g.fillPolygon(fitAxisToScreen(xPoints, GraphicsRatio), fitAxisToScreen(yPoints, verticalGraphicsRatio), 3);
+        g.fillPolygon(fitAxisToScreen(xPoints, false), fitAxisToScreen(yPoints, true), 3);
     }
 
     //This method fits all values in array to the screen
-    private int[] fitAxisToScreen(float[] axisVal, float axisRatio) {
+    private int[] fitAxisToScreen(float[] axisVal, boolean vertical) {
         int[] fittedAxisVal = new int[3];
         for (int i = 0; i < 3; i++) {
-            fittedAxisVal[i] = valFromOneToScreen(axisVal[i], axisRatio);
+            fittedAxisVal[i] = valFromOneToScreen(axisVal[i], vertical);
         }
         return fittedAxisVal;
     }
 
     //This method fits some value to the screen. The value is betwwen zero and one
-    private int valFromOneToScreen(float value, float ratio) {
+    private int valFromOneToScreen(float value, boolean vertical) {
+        int bigAxis = Math.max(SCREEN_WIDTH, SCREEN_HEIGHT);
         //Scales based on screen width and height
-        return (int) ((value/2) * ratio * Math.min(SCREEN_HEIGHT, SCREEN_WIDTH) + (Math.min(SCREEN_HEIGHT, SCREEN_WIDTH)/2));
+        if (vertical) {
+            return (int) ((value/2) * verticalGraphicsRatio * bigAxis + (SCREEN_HEIGHT/2));
+        } else {
+            return (int) ((value/2) * graphicsRatio * bigAxis + (SCREEN_WIDTH/2));
+        }
+        
     }
 }

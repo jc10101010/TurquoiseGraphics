@@ -13,14 +13,14 @@ public class GFrame extends JFrame
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
-    private final int SCREEN_WIDTH = 700;
-    private final int SCREEN_HEIGHT = 700;
+    private final int SCREEN_WIDTH = 1920;
+    private final int SCREEN_HEIGHT = 1080;
     private GPanel demoPanel; //This demo panel inherits from the JPanel class and is where the 3D graphics happen
 
     //This constructor sets up the GameFrame object and creates all of the UI.
     public GFrame()
     {
-        demoPanel = new GPanel();
+        demoPanel = new GPanel(SCREEN_WIDTH, SCREEN_HEIGHT);
         demoPanel.setBounds(0,0,SCREEN_WIDTH,SCREEN_HEIGHT);
         demoPanel.setVisible(true);
         add(demoPanel);

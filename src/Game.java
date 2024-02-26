@@ -9,12 +9,14 @@ import javax.swing.KeyStroke;
 
 
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 
 import colours.InverseSqrShadow;
 import core.RenderObject;
 import core.Scene;
 
 import java.awt.Color;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 
@@ -35,20 +37,23 @@ public class Game {
     private Vertex2D mousePosition = new Vertex2D(0, 0);
 
     private float moveSpeed = 8.0f;
-    private float rotationSpeed = 50.0f;
+    private float rotationSpeed = 80.0f;
     private double lastFrameTime = System.currentTimeMillis();
+    private double timeSinceLast;
 
     public Game(Scene scene, GPanel panel) {
         this.scene = scene;
         this.panel = panel;
-
+        panel.setCursor(panel.getToolkit().createCustomCursor(
+            new BufferedImage(3, 3, BufferedImage.TYPE_INT_ARGB), new Point(0, 0),
+            "null"));
         setupScene();
         setKeyListeners();
         setMouseListener();
     }
 
     private void setupScene() {
-        enemy = RenderObject.loadObject("data/monkey.obj", "enemy", new InverseSqrShadow(new Color(255,0,0), scene), new Vertex(0,1.5f,0));
+        enemy = RenderObject.loadObject("data/teapot.obj", "enemy", new InverseSqrShadow(new Color(255,0,0), scene), new Vertex(0,0f,0));
         plane  = RenderObject.loadObject("data/plane.obj", "enemy", new InverseSqrShadow(new Color(255, 255, 255), scene), new Vertex(0,0,0));
 
         float planeScale = 3;
@@ -59,8 +64,28 @@ public class Game {
     }
 
     public void tick() {
-        double timeSinceLast = ( (double) System.nanoTime() - lastFrameTime)/ (1000000000.0);
+        timeSinceLast = ( (double) System.nanoTime() - lastFrameTime)/ (1000000000.0);
 
+        setRotation();
+        setPosition();
+        
+        scene.setCamRot(playerRotation);
+        scene.setCamPos(playerPosition);
+
+        lastFrameTime = System.nanoTime();
+    }
+
+    private void setRotation() {
+        playerRotation.y = mousePosition.x * rotationSpeed * 0.1f;
+        playerRotation.x = mousePosition.y * rotationSpeed * 0.1f;
+        if (playerRotation.x > Math.PI/2) {
+            playerRotation.x = (float) Math.PI/2;
+        } else if (playerRotation.x <  -Math.PI/2) {
+            playerRotation.x = (float) -Math.PI/2;
+        }
+    }
+
+    private void setPosition() {
         float moveDirMagnitude = moveDir.magnitude();
         Vertex moveDirNormalized = null;
 
@@ -69,24 +94,12 @@ public class Game {
         } else {
             moveDirNormalized = new Vertex(0, 0, 0);
         }
-        
+        Vertex playerRotationY = new Vertex(0, playerRotation.y, 0);
+        Vertex moveDirNormalRotated = scene.rotateVertexByVertex(moveDirNormalized, playerRotationY);
 
-        playerPosition.x += moveDirNormalized.x * moveSpeed * timeSinceLast;
-        playerPosition.y += moveDirNormalized.y * moveSpeed * timeSinceLast;
-        playerPosition.z += moveDirNormalized.z * moveSpeed * timeSinceLast;
-
-        playerRotation.y = mousePosition.x * rotationSpeed * 0.1f;
-        playerRotation.x = mousePosition.y * rotationSpeed * 0.1f;
-        if (playerRotation.x > Math.PI/2) {
-            playerRotation.x = (float) Math.PI/2;
-        } else if (playerRotation.x <  -Math.PI/2) {
-            playerRotation.x = (float) -Math.PI/2;
-        }
-        
-        scene.setCamRot(playerRotation);
-        scene.setCamPos(playerPosition);
-
-        lastFrameTime = System.nanoTime();
+        playerPosition.x += moveDirNormalRotated.x * moveSpeed * timeSinceLast;
+        //playerPosition.y += moveDirNormalRotated.y * moveSpeed * timeSinceLast;
+        playerPosition.z += moveDirNormalRotated.z * moveSpeed * timeSinceLast;
     }
 
     private void setMouseListener() {
