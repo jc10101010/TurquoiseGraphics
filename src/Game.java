@@ -7,14 +7,20 @@ import javax.swing.Action;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
+
+import java.awt.event.MouseEvent;
+
 import colours.InverseSqrShadow;
 import core.RenderObject;
 import core.Scene;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+
 
 import objects.Vertex;
+import objects.Vertex2D;
 
 public class Game {
     private Scene scene;
@@ -26,13 +32,22 @@ public class Game {
     private Vertex playerRotation = new Vertex(0, 0, 0);
     
     private Vertex moveDir = new Vertex(0, 0, 0);
+    private Vertex2D mousePosition = new Vertex2D(0, 0);
+
     private float moveSpeed = 8.0f;
+    private float rotationSpeed = 50.0f;
     private double lastFrameTime = System.currentTimeMillis();
 
     public Game(Scene scene, GPanel panel) {
         this.scene = scene;
         this.panel = panel;
 
+        setupScene();
+        setKeyListeners();
+        setMouseListener();
+    }
+
+    private void setupScene() {
         enemy = RenderObject.loadObject("data/monkey.obj", "enemy", new InverseSqrShadow(new Color(255,0,0), scene), new Vertex(0,1.5f,0));
         plane  = RenderObject.loadObject("data/plane.obj", "enemy", new InverseSqrShadow(new Color(255, 255, 255), scene), new Vertex(0,0,0));
 
@@ -41,9 +56,6 @@ public class Game {
 
         scene.addObject(enemy);
         scene.addObject(plane);
-        
-        setKeyListeners();
-        setMouseListener();
     }
 
     public void tick() {
@@ -62,6 +74,14 @@ public class Game {
         playerPosition.x += moveDirNormalized.x * moveSpeed * timeSinceLast;
         playerPosition.y += moveDirNormalized.y * moveSpeed * timeSinceLast;
         playerPosition.z += moveDirNormalized.z * moveSpeed * timeSinceLast;
+
+        playerRotation.y = mousePosition.x * rotationSpeed * 0.1f;
+        playerRotation.x = mousePosition.y * rotationSpeed * 0.1f;
+        if (playerRotation.x > Math.PI/2) {
+            playerRotation.x = (float) Math.PI/2;
+        } else if (playerRotation.x <  -Math.PI/2) {
+            playerRotation.x = (float) -Math.PI/2;
+        }
         
         scene.setCamRot(playerRotation);
         scene.setCamPos(playerPosition);
@@ -70,7 +90,22 @@ public class Game {
     }
 
     private void setMouseListener() {
+        //Adds listener events for when mouse is moved and when it is clicked
+        panel.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent mouseEvent) { 
+                
+            }
+        });
+        panel.addMouseMotionListener(new MouseAdapter() {
+            public void mouseMoved(MouseEvent mouseEvent) { 
+                mouseListener(mouseEvent);
+            }
+        });
         
+    }
+
+    private void mouseListener(MouseEvent mouseEvent) {
+        mousePosition = new Vertex2D(mouseEvent.getX()/ ((float) panel.getWidth()) - 0.5f, mouseEvent.getY()/((float) panel.getHeight()) - 0.5f);
     }
 
     private void setKeyListeners() {
