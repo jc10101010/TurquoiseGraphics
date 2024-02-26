@@ -14,7 +14,7 @@ public class InverseSqrShadow extends ColourShader{
     
     public InverseSqrShadow (Color colour, Scene scene) {
         this.colour = colour;
-        this.shaderFactor = 0.1f;//0.2f;
+        this.shaderFactor = 0.02f;//0.2f;
         this.scene = scene;
     }
 

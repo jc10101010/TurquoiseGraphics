@@ -33,8 +33,8 @@ public class Game {
         this.scene = scene;
         this.panel = panel;
 
-        enemy = RenderObject.loadObject("data/monkey.obj", "enemy", new InverseSqrShadow(new Color(0,238,238), scene), new Vertex(0,1.5f,0));
-        plane  = RenderObject.loadObject("data/plane.obj", "enemy", new InverseSqrShadow(new Color(255, 0, 0), scene), new Vertex(0,0,0));
+        enemy = RenderObject.loadObject("data/monkey.obj", "enemy", new InverseSqrShadow(new Color(255,0,0), scene), new Vertex(0,1.5f,0));
+        plane  = RenderObject.loadObject("data/plane.obj", "enemy", new InverseSqrShadow(new Color(255, 255, 255), scene), new Vertex(0,0,0));
 
         float planeScale = 3;
         plane.setScale(new Vertex(planeScale, planeScale, planeScale));
@@ -43,6 +43,7 @@ public class Game {
         scene.addObject(plane);
         
         setKeyListeners();
+        setMouseListener();
     }
 
     public void tick() {
@@ -66,6 +67,10 @@ public class Game {
         scene.setCamPos(playerPosition);
 
         lastFrameTime = System.nanoTime();
+    }
+
+    private void setMouseListener() {
+        
     }
 
     private void setKeyListeners() {
