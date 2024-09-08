@@ -1,6 +1,5 @@
 package colours;
 import java.awt.Color;
-
 import objects.Triangle;
 import objects.Vertex;
 
@@ -13,6 +12,15 @@ public abstract class ColourShader {
         float absX = Math.abs(x);
         return (float) (1/(1 + Math.exp(-1 * absX))) * -2 + 2;
     }
+    
+    /**
+    * Calculates the inverse square of some value.
+    * In physics, the greater the distance from a light 
+    * The exponentially less light you see.
+    * 
+    * @param  x  the value to be inverse squared
+    * @return  1/((absX+1)*(absX+1)) the calculation result
+    */
     public static float inverseSquare(float x) {
         float absX = Math.abs(x);
         return 1/((absX+1)*(absX+1));

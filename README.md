@@ -1,7 +1,15 @@
-# Turquoise Graphics - a reusable graphics engine for Java
+# Turquoise Graphics - a GUI-agnostic graphics engine written in Java, implemented in Swing
 
-A graphics package using Java. This demo shows a few of the engines features.
+The main features of this program are:
+ * Quickly importing obj files
+ * ColourShaders allowing for full graphical customisation
+ * Positioning, Scaling, Rotating objects
+ * Can be implemented with any GUI, even the console!
 
-Run src/GFrame.java to run project
+This specific implementation is written in Swing.
 
+To run this example type:
+```
+bash crGame.sh
+```
 

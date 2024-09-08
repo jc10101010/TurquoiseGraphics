@@ -1,0 +1,16 @@
+./src/colours/ColourShader.java
+./src/colours/HorizontalShader.java
+./src/colours/InverseSqrShadow.java
+./src/colours/NonShadow.java
+./src/core/RenderObject.java
+./src/core/Scene.java
+./src/events/CameraEvent.java
+./src/events/Event.java
+./src/events/LinearCameraEvent.java
+./src/Game.java
+./src/GFrame.java
+./src/GPanel.java
+./src/objects/Triangle.java
+./src/objects/Triangle2D.java
+./src/objects/Vertex.java
+./src/objects/Vertex2D.java

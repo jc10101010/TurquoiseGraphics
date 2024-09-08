@@ -50,6 +50,10 @@ public class GPanel extends JPanel{
         
     }
 
+    /**
+    * Performs all projection calculations and draws the 
+    * scene to the screen
+    */
     private void drawSceneToScreen(Graphics g) {
        
         g.setFont(font);
