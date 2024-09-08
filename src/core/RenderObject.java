@@ -1,12 +1,10 @@
 package core;
 
-import java.awt.Color;
+import colours.ColourShader;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-
-import colours.ColourShader;
 import objects.Triangle;
 import objects.Vertex;
 /*
@@ -18,25 +16,28 @@ public class RenderObject {
     
     private String name;
     private Vertex scale;
+    private Vertex rotation;
     private Vertex position;
     private ColourShader colourShader;
 
     private Triangle[] triangles;
     private Triangle[] adjustedTriangles;
-    private Vertex[] vertices;
     
     private int tCount;
+
+    private Vertex c = new Vertex(0, 0, 0); //The vertex of cos of rotation
+    private Vertex s = new Vertex(0, 0, 0); //The vertex of sin of rotation
     
     //Constructor that initializes the object
-    public RenderObject(String name, Triangle[] triangles, Vertex[] vertices, Vertex position, Vertex scale, ColourShader colourShader) {
+    public RenderObject(String name, Triangle[] triangles, Vertex position, Vertex scale,  Vertex rotation, ColourShader colourShader) {
         this.name = name;
         this.triangles = triangles;
-        this.vertices = vertices;
         this.scale = scale;
         this.adjustedTriangles = new Triangle[triangles.length];
         this.colourShader = colourShader;
         this.tCount = triangles.length;
         this.position = position;
+        this.rotation = rotation;
         for (int i = 0; i < tCount; i++) {
             adjustedTriangles[i] = new Triangle(new Vertex(0, 0, 0), new Vertex(0, 0, 0), new Vertex(0, 0, 0));
         }
@@ -50,9 +51,11 @@ public class RenderObject {
     
     //This method calculates the adjusted & scaled positions of all triangles
     private void adjustTriangles() {
+        generateObjectRotation();
         for (int index = 0; index < tCount; index++){
-            RenderObject.scale(adjustedTriangles[index], triangles[index], scale);
-            RenderObject.adjust(adjustedTriangles[index], adjustedTriangles[index] , position);
+            scale(adjustedTriangles[index], triangles[index]);
+            rotate(adjustedTriangles[index], adjustedTriangles[index]);
+            adjust(adjustedTriangles[index], adjustedTriangles[index]);
         }
     }
 
@@ -67,6 +70,10 @@ public class RenderObject {
 
     public Vertex getScale() {
         return scale;
+    }
+
+    public Vertex getRotation() {
+        return rotation;
     }
 
     public int getTCount() {
@@ -99,12 +106,22 @@ public class RenderObject {
         adjustTriangles();
     }
 
+    public void setRotation(Vertex newRotation) {
+        this.rotation = newRotation;
+        adjustTriangles();
+    }
+
+    public void alterRotation(Vertex alteration) {
+        this.rotation = Vertex.add(rotation, alteration);
+        adjustTriangles();
+    }
+
     public void setColour(ColourShader colourShader) {
         this.colourShader = colourShader;
     }
 
-    //This static method scales a triangle by some vertex 
-    public static void scale(Triangle tAfter, Triangle tBefore, Vertex scale) {
+    //This method scales a triangle by some vertex 
+    public void scale(Triangle tAfter, Triangle tBefore) {
         Vertex v1new = Vertex.multiply(tBefore.v1, scale);
         Vertex v2new = Vertex.multiply(tBefore.v2, scale);
         Vertex v3new = Vertex.multiply(tBefore.v3, scale);
@@ -113,11 +130,31 @@ public class RenderObject {
         tAfter.v3 = v3new;
     }
 
-    //This static method adjusts a triangle by some vertex 
-    public static void adjust(Triangle tAfter, Triangle tBefore, Vertex adjustment) {
-        Vertex v1new = Vertex.add(tBefore.v1, adjustment);
-        Vertex v2new = Vertex.add(tBefore.v2, adjustment);
-        Vertex v3new = Vertex.add(tBefore.v3, adjustment);
+    //This method adjusts a triangle by some vertex 
+    public void adjust(Triangle tAfter, Triangle tBefore) {
+        Vertex v1new = Vertex.add(tBefore.v1, position);
+        Vertex v2new = Vertex.add(tBefore.v2, position);
+        Vertex v3new = Vertex.add(tBefore.v3, position);
+        tAfter.v1 = v1new;
+        tAfter.v2 = v2new;
+        tAfter.v3 = v3new;
+    }
+
+    private void generateObjectRotation() {
+        s.x = (float) Math.sin(-rotation.x);
+        s.y = (float) Math.sin(-rotation.y);
+        s.z = (float) Math.sin(-rotation.z);
+        c.x = (float) Math.cos(-rotation.x);
+        c.y = (float) Math.cos(-rotation.y);
+        c.z = (float) Math.cos(-rotation.z);
+
+    }
+
+    //This static method rotates a triangle by some angle
+    public void rotate(Triangle tAfter, Triangle tBefore) {
+        Vertex v1new = Vertex.rotateWithSinCos(tBefore.v1, s ,c);
+        Vertex v2new = Vertex.rotateWithSinCos(tBefore.v2, s ,c);
+        Vertex v3new = Vertex.rotateWithSinCos(tBefore.v3, s ,c);
         tAfter.v1 = v1new;
         tAfter.v2 = v2new;
         tAfter.v3 = v3new;
@@ -188,9 +225,11 @@ public class RenderObject {
             reader.close();
 		} catch (FileNotFoundException e) {
 			System.out.println("File not found: " + e.getMessage());
+            e.printStackTrace();
 		} catch (IOException e) {
 			System.out.println("IO Exception: " + e.getMessage());
+            e.printStackTrace();
 		}
-        return new RenderObject(name, triangles, vertices, position, new Vertex(1, 1, 1), colourShader);
+        return new RenderObject(name, triangles, position, new Vertex(1, 1, 1), new Vertex(0,0,0), colourShader);
     }
 }

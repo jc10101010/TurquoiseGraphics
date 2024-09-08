@@ -31,6 +31,7 @@ public class GPanel extends JPanel{
         SCREEN_WIDTH = w;
         SCREEN_HEIGHT = h;
         scene = new Scene(new ArrayList<RenderObject> (Arrays.asList()));
+        
         game = new Game(scene, this);
     }
 
@@ -41,14 +42,20 @@ public class GPanel extends JPanel{
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
         //Tick the game
+        
         game.tick();
+        
         //Draw the current state of the scene to the GPanel screen
         drawSceneToScreen(g);
+        
     }
 
     private void drawSceneToScreen(Graphics g) {
+       
         g.setFont(font);
+        
         scene.renderScene();
+        
         Triangle2D[] trianglesToDisplay = scene.getRenderedTriangles();
         Color[] colours = scene.getColours();
         String[] names = scene.getNames();

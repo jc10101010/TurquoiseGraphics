@@ -1,26 +1,16 @@
-
-
-import java.util.ArrayList;
-
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.JPanel;
-import javax.swing.KeyStroke;
-
-
-import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
-
 import colours.InverseSqrShadow;
 import core.RenderObject;
 import core.Scene;
-
 import java.awt.Color;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
-
-
+import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.JPanel;
+import javax.swing.KeyStroke;
 import objects.Vertex;
 import objects.Vertex2D;
 
@@ -38,12 +28,28 @@ public class Game {
 
     private float moveSpeed = 8.0f;
     private float rotationSpeed = 80.0f;
-    private double lastFrameTime = System.currentTimeMillis();
+    private double lastFrameTime;
     private double timeSinceLast;
+
+    private boolean isWDown = false;
+    private boolean isADown = false;        
+    private boolean isSDown = false;
+    private boolean isDDown = false;
+
+    private Action wDown;
+    private Action wUp;
+    private Action aDown;
+    private Action aUp;
+    private Action sDown;
+    private Action sUp;
+    private Action dDown;
+    private Action dUp;
 
     public Game(Scene scene, GPanel panel) {
         this.scene = scene;
         this.panel = panel;
+        this.lastFrameTime = System.nanoTime();
+        
         panel.setCursor(panel.getToolkit().createCustomCursor(
             new BufferedImage(3, 3, BufferedImage.TYPE_INT_ARGB), new Point(0, 0),
             "null"));
@@ -61,6 +67,75 @@ public class Game {
 
         scene.addObject(enemy);
         scene.addObject(plane);
+
+        defineAction();
+    }
+
+    public void defineAction() {
+        
+        wDown = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                if (!isWDown) {
+                    moveDir.z += 1;
+                    isWDown = true;
+                }
+            } };
+    
+        wUp = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                if (isWDown) {
+                    moveDir.z -= 1;
+                    isWDown = false;
+                }
+            } };
+    
+        aDown = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                if (!isADown) {
+                    moveDir.x -= 1;
+                    isADown = true;
+                }
+            } };
+    
+        aUp = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                if (isADown) {
+                    moveDir.x += 1;
+                    isADown = false;
+                }
+            } };
+    
+        sDown = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                if (!isSDown) {
+                    moveDir.z -= 1;
+                    isSDown = true;
+                }
+            } };
+    
+        sUp = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                if (isSDown) {
+                    moveDir.z += 1;
+                    isSDown = false;
+                }
+            } };
+    
+        dDown = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                if (!isDDown) {
+                    moveDir.x += 1;
+                    isDDown = true;
+                }
+            } };
+    
+        dUp = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                if (isDDown) {
+                    moveDir.x -= 1;
+                    isDDown = false;
+                }
+            } };
     }
 
     public void tick() {
@@ -68,6 +143,10 @@ public class Game {
 
         setRotation();
         setPosition();
+
+        // enemy.alterPosition(Vertex.multiply(new Vertex(0f, 0,0.5f), new Vertex((float) timeSinceLast,(float) timeSinceLast,(float) timeSinceLast)) );
+        // enemy.alterRotation(Vertex.multiply(new Vertex(0f, 3f,0f), new Vertex((float) timeSinceLast,(float) timeSinceLast,(float) timeSinceLast)) );
+        // enemy.alterScale(Vertex.multiply(new Vertex(0.5f, 0.5f,0.5f), new Vertex((float) timeSinceLast,(float) timeSinceLast,(float) timeSinceLast)) );
         
         scene.setCamRot(playerRotation);
         scene.setCamPos(playerPosition);
@@ -95,7 +174,7 @@ public class Game {
             moveDirNormalized = new Vertex(0, 0, 0);
         }
         Vertex playerRotationY = new Vertex(0, playerRotation.y, 0);
-        Vertex moveDirNormalRotated = scene.rotateVertexByVertex(moveDirNormalized, playerRotationY);
+        Vertex moveDirNormalRotated = Vertex.rotate(moveDirNormalized, playerRotationY);
 
         playerPosition.x += moveDirNormalRotated.x * moveSpeed * timeSinceLast;
         //playerPosition.y += moveDirNormalRotated.y * moveSpeed * timeSinceLast;
@@ -157,82 +236,7 @@ public class Game {
                                     dUp);
     }
 
-    private boolean isWDown = false;
-
-    Action wDown = new AbstractAction() {
-        public void actionPerformed(ActionEvent e) {
-            if (!isWDown) {
-                moveDir.z += 1;
-                isWDown = true;
-            }
-        } };
-
-    Action wUp = new AbstractAction() {
-        public void actionPerformed(ActionEvent e) {
-            if (isWDown) {
-                moveDir.z -= 1;
-                isWDown = false;
-            }
-        } };
-
     
-    private boolean isADown = false;
-
-    Action aDown = new AbstractAction() {
-        public void actionPerformed(ActionEvent e) {
-            if (!isADown) {
-                moveDir.x -= 1;
-                isADown = true;
-            }
-        } };
-
-    Action aUp = new AbstractAction() {
-        public void actionPerformed(ActionEvent e) {
-            if (isADown) {
-                moveDir.x += 1;
-                isADown = false;
-            }
-        } };
-    
-    
-    
-    private boolean isSDown = false;
-
-    Action sDown = new AbstractAction() {
-        public void actionPerformed(ActionEvent e) {
-            if (!isSDown) {
-                moveDir.z -= 1;
-                isSDown = true;
-            }
-        } };
-
-    Action sUp = new AbstractAction() {
-        public void actionPerformed(ActionEvent e) {
-            if (isSDown) {
-                moveDir.z += 1;
-                isSDown = false;
-            }
-        } };
-
-
-    
-    private boolean isDDown = false;
-
-    Action dDown = new AbstractAction() {
-        public void actionPerformed(ActionEvent e) {
-            if (!isDDown) {
-                moveDir.x += 1;
-                isDDown = true;
-            }
-        } };
-
-    Action dUp = new AbstractAction() {
-        public void actionPerformed(ActionEvent e) {
-            if (isDDown) {
-                moveDir.x -= 1;
-                isDDown = false;
-            }
-        } };
 
 }
 

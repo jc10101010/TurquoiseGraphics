@@ -2,12 +2,12 @@ package core;
 
 import colours.ColourShader;
 import events.CameraEvent;
+import java.awt.Color;
+import java.util.ArrayList;
 import objects.Triangle;
 import objects.Triangle2D;
 import objects.Vertex;
 import objects.Vertex2D;
-import java.awt.Color;
-import java.util.ArrayList;
 
 /*
  * The Scene object has RenderObjects in it.
@@ -43,10 +43,16 @@ public class Scene {
 
     //Renders the scene as it currently is
     public void renderScene() {
+           
         followCameraEvents();
+        
+        
         generateCameraRot();
+        
         sortTrianglesForRendering();
+        
         renderTriangles();
+        
     }
 
     //This method follows along with the list of camera events
@@ -72,22 +78,28 @@ public class Scene {
 
     //This method generates the rotation vertices for math later
     private void generateCameraRot() {
+        
         s.x = (float) Math.sin(camRotation.x);
         s.y = (float) Math.sin(camRotation.y);
         s.z = (float) Math.sin(camRotation.z);
         c.x = (float) Math.cos(camRotation.x);
         c.y = (float) Math.cos(camRotation.y);
         c.z = (float) Math.cos(camRotation.z);
+        
 
     }
 
     //This method sorts all the triangles in the scene based on their distance from the camera
     private void sortTrianglesForRendering() {
+        
         float[] valArray = new float[triangleCount];
+        
         for (int index = 0; index < triangleCount; index++) {
             float val = triangleValue(triangles[index]);
+            
             valArray[index] = val;
         }
+       
 
         int n = triangleCount;
         boolean sorted = false;
@@ -124,15 +136,20 @@ public class Scene {
 
         int index = 0;
         for (Triangle triangle : triangles) {
-            triangles2DRendered[index] = renderTriangle(triangle);
-            finalColours[index] = colours[index].shadeBasedOnTriangle(triangles[index]);
+            if (triangle != null && colours[index] != null ) {
 
-            index += 1;
+                triangles2DRendered[index] = renderTriangle(triangle);
+                finalColours[index] = colours[index].shadeBasedOnTriangle(triangles[index]);
+
+                index++;
+            }
+            
         }
     }
     
     //This function takes a triangle and turns it into 2D
     public Triangle2D renderTriangle(Triangle t){
+
         Vertex2D v1 = renderVertex(t.v1);
         if (v1 == null) {
             return null;
@@ -152,47 +169,26 @@ public class Scene {
     //This function renders a single vertex onto 2D
     public Vertex2D renderVertex(Vertex t){
         Vertex dif = Vertex.difference(t, camPos);
-        float x = dif.x;
-        float y = dif.y;
-        float z = dif.z;
-        //Math learned from [11] https://en.wikipedia.org/wiki/3D_projection
-        float dX = c.y * (s.z * y + c.z * x) - s.y * z;
-        float dY = s.x * (c.y * z + s.y * (s.z * y + c.z * x)) + c.x * (c.z * y - s.z * x);
-        float dZ = c.x * (c.y * z + s.y * (s.z * y + c.z * x)) - s.x * (c.z * y - s.z * x);
+        Vertex d = Vertex.rotateWithSinCos(dif, s ,c);
         //Math ended
-        if (dZ <= 0) { 
+        if (d.z <= 0) { 
             return null;
         }
 
-        float bX = (screenPosRel.z / dZ) * dX + screenPosRel.x;
-        float bY = (screenPosRel.z / dZ) * dY + screenPosRel.y;
+        float bX = (screenPosRel.z / d.z) * d.x + screenPosRel.x;
+        float bY = (screenPosRel.z / d.z) * d.y + screenPosRel.y;
         return new Vertex2D(bX,bY);
     }
 
     // This function finds the average magnitude sqrd of a triangle in relation to the camera
     private float triangleValue(Triangle triangle) {
+        if (triangle == null) {
+            return 0;
+        }
         float v1d = Vertex.difference(triangle.v1, camPos).magnitudeSqrd();
         float v2d = Vertex.difference(triangle.v2, camPos).magnitudeSqrd();
         float v3d = Vertex.difference(triangle.v3, camPos).magnitudeSqrd();
         return (v1d + v2d + v3d) / 3.0f;
-    }
-
-    public Vertex rotateVertexByVertex(Vertex v1, Vertex v2) {
-        Vertex c = new Vertex(0, 0, 0);
-        Vertex s = new Vertex(0, 0, 0);
-        s.x = (float) Math.sin(-v2.x);
-        s.y = (float) Math.sin(-v2.y);
-        s.z = (float) Math.sin(-v2.z);
-        c.x = (float) Math.cos(-v2.x);
-        c.y = (float) Math.cos(-v2.y);
-        c.z = (float) Math.cos(-v2.z);
-        float x = v1.x;
-        float y = v1.y;
-        float z = v1.z;
-        float dX = c.y * (s.z * y + c.z * x) - s.y * z;
-        float dY = s.x * (c.y * z + s.y * (s.z * y + c.z * x)) + c.x * (c.z * y - s.z * x);
-        float dZ = c.x * (c.y * z + s.y * (s.z * y + c.z * x)) - s.x * (c.z * y - s.z * x);
-        return new Vertex(dX, dY, dZ);
     }
 
     //This function returns an array of all the triangles2d

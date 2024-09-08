@@ -1,9 +1,8 @@
 package colours;
+import core.Scene;
 import java.awt.Color;
-
 import objects.Triangle;
 import objects.Vertex;
-import core.Scene;
 
 //The InverseSqrShadow class hades an object based on it's distance from the center of the scene.
 
@@ -14,7 +13,7 @@ public class InverseSqrShadow extends ColourShader{
     
     public InverseSqrShadow (Color colour, Scene scene) {
         this.colour = colour;
-        this.shaderFactor = 0.02f;//0.2f;
+        this.shaderFactor = 0.03f;//0.02f;
         this.scene = scene;
     }
 
