@@ -5,7 +5,7 @@ package objects;
  * It is commonly used for 2D graphics, UI elements, or screen space representations.
  */
 public class Vertex2D {
-    // Public fields for the x and y coordinates of the vertex
+    //Public fields for the x and y coordinates of the vertex
     public float x;
     public float y;
 

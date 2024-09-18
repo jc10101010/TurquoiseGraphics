@@ -28,8 +28,8 @@ public abstract class ColourShader {
      * @return A float value between 0 and 2, transformed by a sigmoid function.
      */
     public static float sigmoid(float x) {
-        float absX = Math.abs(x); // Take the absolute value of x
-        return (float) (1 / (1 + Math.exp(-1 * absX))) * -2 + 2; // Return sigmoid-transformed value
+        float absX = Math.abs(x); //Take the absolute value of x
+        return (float) (1 / (1 + Math.exp(-1 * absX))) * -2 + 2; //Return sigmoid-transformed value
     }
     
     /**
@@ -41,8 +41,8 @@ public abstract class ColourShader {
      * @return The result of 1 / ( (abs(x) + 1) ^ 2 ), used for light falloff.
      */
     public static float inverseSquare(float x) {
-        float absX = Math.abs(x); // Take the absolute value of x
-        return 1 / ((absX + 1) * (absX + 1)); // Apply inverse square formula
+        float absX = Math.abs(x); //Take the absolute value of x
+        return 1 / ((absX + 1) * (absX + 1)); //Apply inverse square formula
     }
 
     /**
@@ -53,8 +53,8 @@ public abstract class ColourShader {
      * @return A transformed value representing the shadow intensity.
      */
     public static float newShadow(float x) {
-        float res = 1 / (-x + 1.4f); // Custom shadow calculation based on input value
-        return Math.abs(res); // Return the absolute value to ensure positive results
+        float res = 1 / (-x + 1.4f); //Custom shadow calculation based on input value
+        return Math.abs(res); //Return the absolute value to ensure positive results
     }
 
     /**
@@ -66,11 +66,11 @@ public abstract class ColourShader {
      */
     public static int capRGB(int inp) {
         if (inp > 255) {
-            return 255; // Cap the value at 255 if it's too high
+            return 255; //Cap the value at 255 if it's too high
         } else if (inp < 0) {
-            return 0; // Cap the value at 0 if it's negative
+            return 0; //Cap the value at 0 if it's negative
         } else {
-            return inp; // Return the input value if it's already within the valid range
+            return inp; //Return the input value if it's already within the valid range
         }
     }
 
@@ -82,7 +82,7 @@ public abstract class ColourShader {
      * @return A Vertex representing the average position of the triangle.
      */
     public static Vertex averageTriangleAsVertex(Triangle triangle) {
-        // Add the three vertices and divide by 3 to get the average position
+        //Add the three vertices and divide by 3 to get the average position
         Vertex avgVertex = Vertex.divide(Vertex.add(Vertex.add(triangle.v1, triangle.v2), triangle.v3), 3.0f);
         return avgVertex;
     }

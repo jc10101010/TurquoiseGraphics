@@ -14,23 +14,23 @@ import java.awt.Font;
 
 public class GPanel extends JPanel{
 
-    // Screen width and height for the panel
+    //Screen width and height for the panel
     private final int SCREEN_WIDTH;
     private final int SCREEN_HEIGHT;
 
-    // Graphics ratio determines the size of the dodecahedron on the screen
-    private float graphicsRatio = 0.5f; // Ratio that the dodecahedron takes up on the screen
-    private float verticalGraphicsRatio = graphicsRatio * -1; // Inverts the dodecahedron vertically for correct orientation
+    //Graphics ratio determines the size of the dodecahedron on the screen
+    private float graphicsRatio = 0.5f; //Ratio that the dodecahedron takes up on the screen
+    private float verticalGraphicsRatio = graphicsRatio * -1; //Inverts the dodecahedron vertically for correct orientation
 
-    // Scene containing objects to be rendered
+    //Scene containing objects to be rendered
     private Scene scene;
-    // Outline color for all objects (drawn with Swing)
+    //Outline color for all objects (drawn with Swing)
     private Color outline = Color.BLACK;
 
-    // Font used for rendering text
+    //Font used for rendering text
     private Font font = new Font( "SansSerif", Font.PLAIN, 23 );
 
-    // Game instance to handle game logic
+    //Game instance to handle game logic
     private Game game;
 
     /**
@@ -42,10 +42,10 @@ public class GPanel extends JPanel{
     public GPanel(int w, int h) {  
         SCREEN_WIDTH = w;
         SCREEN_HEIGHT = h;
-        // Initializes an empty scene with no renderable objects
+        //Initializes an empty scene with no renderable objects
         scene = new Scene(new ArrayList<RenderObject> (Arrays.asList()));
         
-        // Initializes the game logic with the current scene and this GPanel instance
+        //Initializes the game logic with the current scene and this GPanel instance
         game = new Game(scene, this);
     }
 
@@ -56,14 +56,14 @@ public class GPanel extends JPanel{
      */
     @Override
     protected void paintComponent(Graphics g) {
-        // Fills background with black
+        //Fills background with black
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 
-        // Updates the game state (e.g., physics, logic)
+        //Updates the game state (e.g., physics, logic)
         game.tick();
         
-        // Renders the updated scene to the screen
+        //Renders the updated scene to the screen
         drawSceneToScreen(g);
     }
 
@@ -73,23 +73,23 @@ public class GPanel extends JPanel{
      * @param g The Graphics object used for drawing.
      */
     private void drawSceneToScreen(Graphics g) {
-        // Set the font for rendering text
+        //Set the font for rendering text
         g.setFont(font);
         
-        // Renders the scene with the current camera view and objects' state
+        //Renders the scene with the current camera view and objects' state
         scene.renderScene(); 
         
-        // Get the triangles, colors, and names of objects to display
+        //Get the triangles, colors, and names of objects to display
         Triangle2D[] trianglesToDisplay = scene.getRenderedTriangles();
         Color[] colours = scene.getColours();
         String[] names = scene.getNames();
 
-        // Loop through each triangle and draw it on the screen
+        //Loop through each triangle and draw it on the screen
         for (int index = 0; index < scene.getCount(); index++) {
             if (trianglesToDisplay[index] != null) {
-                // Draw the outline of the triangle
+                //Draw the outline of the triangle
                 outlineTriangle(trianglesToDisplay[index], outline, g);
-                // Fill the triangle with the appropriate color
+                //Fill the triangle with the appropriate color
                 fillTriangle(trianglesToDisplay[index], colours[index], g);
             }
         }
@@ -102,11 +102,11 @@ public class GPanel extends JPanel{
      * @param g The Graphics object used for drawing.
      */
     private void outlineTriangle(Triangle2D triangle2d, Color colour, Graphics g) {
-        // Get the x and y coordinates of the triangle vertices
+        //Get the x and y coordinates of the triangle vertices
         float[] xPoints = triangle2d.xValues();
         float[] yPoints = triangle2d.yValues();
 
-        // Set the outline color and draw the triangle
+        //Set the outline color and draw the triangle
         g.setColor(colour);
         g.drawPolygon(fitAxisToScreen(xPoints, false), fitAxisToScreen(yPoints, true), 3);
     }
@@ -118,11 +118,11 @@ public class GPanel extends JPanel{
      * @param g The Graphics object used for drawing.
      */
     private void fillTriangle(Triangle2D triangle2d, Color colour, Graphics g) {
-        // Get the x and y coordinates of the triangle vertices
+        //Get the x and y coordinates of the triangle vertices
         float[] xPoints = triangle2d.xValues();
         float[] yPoints = triangle2d.yValues();
 
-        // Set the fill color and draw the triangle
+        //Set the fill color and draw the triangle
         g.setColor(colour);
         g.fillPolygon(fitAxisToScreen(xPoints, false), fitAxisToScreen(yPoints, true), 3);
     }
@@ -135,10 +135,10 @@ public class GPanel extends JPanel{
      * @return An array of screen coordinates.
      */
     private int[] fitAxisToScreen(float[] axisVal, boolean vertical) {
-        // Create an array for the scaled axis values
+        //Create an array for the scaled axis values
         int[] fittedAxisVal = new int[3];
         for (int i = 0; i < 3; i++) {
-            // Scale each value to fit the screen
+            //Scale each value to fit the screen
             fittedAxisVal[i] = valFromOneToScreen(axisVal[i], vertical);
         }
         return fittedAxisVal;
@@ -151,10 +151,10 @@ public class GPanel extends JPanel{
      * @return The corresponding screen coordinate.
      */
     private int valFromOneToScreen(float value, boolean vertical) {
-        // Get the larger dimension (width or height) for scaling
+        //Get the larger dimension (width or height) for scaling
         int bigAxis = Math.max(SCREEN_WIDTH, SCREEN_HEIGHT);
 
-        // If scaling vertically, apply verticalGraphicsRatio, else use graphicsRatio
+        //If scaling vertically, apply verticalGraphicsRatio, else use graphicsRatio
         if (vertical) {
             return (int) ((value / 2) * verticalGraphicsRatio * bigAxis + (SCREEN_HEIGHT / 2));
         } else {

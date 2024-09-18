@@ -9,20 +9,20 @@ public class GFrame extends JFrame {
      * @throws InterruptedException if the thread sleep is interrupted.
      */
     public static void main(String[] args) throws InterruptedException {
-        GFrame frame = new GFrame(); // Create a new instance of the frame
+        GFrame frame = new GFrame(); //Create a new instance of the frame
 
-        // Infinite loop to continuously update the frame
+        //Infinite loop to continuously update the frame
         while (true) {
-            Thread.sleep(50);  // Control frame rate to approximately 20 frames per second (50 ms delay)
-            frame.update();    // Call the update method to refresh the frame
+            Thread.sleep(50);  //Control frame rate to approximately 20 frames per second (50 ms delay)
+            frame.update();    //Call the update method to refresh the frame
         }
     }
 
-    // Screen width and height for the window
+    //Screen width and height for the window
     private final int SCREEN_WIDTH = 960;
     private final int SCREEN_HEIGHT = 540;
     
-    // Custom JPanel where all game graphics will be rendered
+    //Custom JPanel where all game graphics will be rendered
     private GPanel demoPanel;
 
     /**
@@ -30,20 +30,20 @@ public class GFrame extends JFrame {
      * Initializes the game panel, sets up the frame's size, title, and visibility.
      */
     public GFrame() {
-        // Create a new GPanel instance for rendering, passing screen dimensions
+        //Create a new GPanel instance for rendering, passing screen dimensions
         demoPanel = new GPanel(SCREEN_WIDTH, SCREEN_HEIGHT);
         
-        // Set the size and position of the panel to fit the frame
+        //Set the size and position of the panel to fit the frame
         demoPanel.setBounds(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
         
-        // Add the panel to the frame
+        //Add the panel to the frame
         add(demoPanel);
 
-        // Set up frame properties
-        setTitle("Turquoise Graphics Engine Demo");  // Title of the window
-        setSize(SCREEN_WIDTH, SCREEN_HEIGHT);        // Set the size of the window
-        setVisible(true);                            // Make the window visible
-        setDefaultCloseOperation(EXIT_ON_CLOSE);     // Ensure the program exits when the window is closed
+        //Set up frame properties
+        setTitle("Turquoise Graphics Engine Demo");  //Title of the window
+        setSize(SCREEN_WIDTH, SCREEN_HEIGHT);        //Set the size of the window
+        setVisible(true);                            //Make the window visible
+        setDefaultCloseOperation(EXIT_ON_CLOSE);     //Ensure the program exits when the window is closed
     }
 
     /**
@@ -51,7 +51,7 @@ public class GFrame extends JFrame {
      * This method is called in each iteration of the game loop.
      */
     public void update() {
-        // Repaint the frame, which internally calls the paintComponent() method of the panel
+        //Repaint the frame, which internally calls the paintComponent() method of the panel
         repaint();
     }
 }

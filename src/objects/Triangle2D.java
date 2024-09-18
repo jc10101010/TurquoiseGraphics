@@ -5,7 +5,7 @@ package objects;
  * It consists of three 2D vertices (v1, v2, and v3), each represented by a Vertex2D object.
  */
 public class Triangle2D {
-    // Public fields representing the three vertices of the triangle in 2D space
+    //Public fields representing the three vertices of the triangle in 2D space
     public Vertex2D v1;
     public Vertex2D v2;
     public Vertex2D v3;
@@ -18,7 +18,7 @@ public class Triangle2D {
      * @param v3 The third vertex of the triangle.
      */
     public Triangle2D(Vertex2D v1, Vertex2D v2, Vertex2D v3) {
-        // Initialize the triangle with the provided 2D vertices
+        //Initialize the triangle with the provided 2D vertices
         this.v1 = v1;
         this.v2 = v2;
         this.v3 = v3;
@@ -30,7 +30,7 @@ public class Triangle2D {
      * @return An array of floats representing the x-coordinates of v1, v2, and v3.
      */
     public float[] xValues() {
-        // Return an array of x-coordinates from the vertices
+        //Return an array of x-coordinates from the vertices
         return new float[] { v1.x, v2.x, v3.x };
     }
 
@@ -40,7 +40,7 @@ public class Triangle2D {
      * @return An array of floats representing the y-coordinates of v1, v2, and v3.
      */
     public float[] yValues() {
-        // Return an array of y-coordinates from the vertices
+        //Return an array of y-coordinates from the vertices
         return new float[] { v1.y, v2.y, v3.y };
     }
 }

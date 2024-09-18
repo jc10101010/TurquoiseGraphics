@@ -9,7 +9,7 @@ import objects.Triangle;
  */
 public class NonShadow extends ColourShader {
     
-    // The base colour of the object
+    //The base colour of the object
     private Color colour; 
     
     /**
@@ -18,7 +18,7 @@ public class NonShadow extends ColourShader {
      * @param colour The base colour to apply to the object.
      */
     public NonShadow(Color colour) {
-        this.colour = colour; // Store the provided base colour
+        this.colour = colour; //Store the provided base colour
     }
 
     /**
@@ -30,7 +30,7 @@ public class NonShadow extends ColourShader {
      */
     @Override
     public Color shadeBasedOnTriangle(Triangle triangle) {
-        // Return the base colour without applying any shading logic
+        //Return the base colour without applying any shading logic
         return colour;
     }
 }

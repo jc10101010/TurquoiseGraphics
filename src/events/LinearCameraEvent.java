@@ -20,7 +20,7 @@ public class LinearCameraEvent extends CameraEvent {
      * @param duration The duration of the event in seconds.
      */
     public LinearCameraEvent(Vertex posStart, Vertex posEnd, Vertex rotStart, Vertex rotEnd, float duration) {
-        // Pass the parameters to the parent CameraEvent class
+        //Pass the parameters to the parent CameraEvent class
         super(posStart, posEnd, rotStart, rotEnd, duration);
     }
 
@@ -33,7 +33,7 @@ public class LinearCameraEvent extends CameraEvent {
      */
     @Override
     protected float onCurve() {
-        // Linear interpolation is represented by time progress directly
+        //Linear interpolation is represented by time progress directly
         return timeProgress();
     }
 }

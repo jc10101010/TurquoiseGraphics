@@ -15,22 +15,22 @@ import objects.Vertex;
  */
 public class RenderObject {
 
-    // Basic properties of the render object
-    private String name; // Name of the object
-    private Vertex scale; // Scale of the object
-    private Vertex rotation; // Rotation of the object (x, y, z angles)
-    private Vertex position; // Position of the object in the scene
-    private ColourShader colourShader; // Colour shader to apply for rendering
+    //Basic properties of the render object
+    private String name; //Name of the object
+    private Vertex scale; //Scale of the object
+    private Vertex rotation; //Rotation of the object (x, y, z angles)
+    private Vertex position; //Position of the object in the scene
+    private ColourShader colourShader; //Colour shader to apply for rendering
 
-    // Triangles that make up the object
-    private Triangle[] triangles; // Original triangles of the object
-    private Triangle[] adjustedTriangles; // Transformed triangles after scaling, rotation, and translation
+    //Triangles that make up the object
+    private Triangle[] triangles; //Original triangles of the object
+    private Triangle[] adjustedTriangles; //Transformed triangles after scaling, rotation, and translation
 
-    private int tCount; // Number of triangles in the object
+    private int tCount; //Number of triangles in the object
 
-    // Precomputed sine and cosine values for the object's rotation
-    private Vertex c = new Vertex(0, 0, 0); // The vertex storing cosine of the rotation angles
-    private Vertex s = new Vertex(0, 0, 0); // The vertex storing sine of the rotation angles
+    //Precomputed sine and cosine values for the object's rotation
+    private Vertex c = new Vertex(0, 0, 0); //The vertex storing cosine of the rotation angles
+    private Vertex s = new Vertex(0, 0, 0); //The vertex storing sine of the rotation angles
 
     /**
      * Constructor to initialize the render object with a name, triangles, position, scale, rotation, and colour shader.
@@ -46,13 +46,13 @@ public class RenderObject {
         this.name = name;
         this.triangles = triangles;
         this.scale = scale;
-        this.adjustedTriangles = new Triangle[triangles.length]; // Create array for transformed triangles
+        this.adjustedTriangles = new Triangle[triangles.length]; //Create array for transformed triangles
         this.colourShader = colourShader;
         this.tCount = triangles.length;
         this.position = position;
         this.rotation = rotation;
 
-        // Initialize adjusted triangles with placeholder triangles
+        //Initialize adjusted triangles with placeholder triangles
         for (int i = 0; i < tCount; i++) {
             adjustedTriangles[i] = new Triangle(new Vertex(0, 0, 0), new Vertex(0, 0, 0), new Vertex(0, 0, 0));
         }
@@ -64,7 +64,7 @@ public class RenderObject {
      * @return An array of transformed triangles.
      */
     public Triangle[] loadTriangles() {
-        adjustTriangles(); // Recalculate positions, scales, and rotations of the triangles
+        adjustTriangles(); //Recalculate positions, scales, and rotations of the triangles
         return adjustedTriangles;
     }
 
@@ -72,16 +72,16 @@ public class RenderObject {
      * Adjusts the positions, scales, and rotations of all triangles in the object.
      */
     private void adjustTriangles() {
-        generateObjectRotation(); // Precompute the sine and cosine for rotation
-        // Apply scaling, rotation, and translation to all triangles
+        generateObjectRotation(); //Precompute the sine and cosine for rotation
+        //Apply scaling, rotation, and translation to all triangles
         for (int index = 0; index < tCount; index++) {
-            scale(adjustedTriangles[index], triangles[index]); // Scale the triangle
-            rotate(adjustedTriangles[index], adjustedTriangles[index]); // Rotate the triangle
-            adjust(adjustedTriangles[index], adjustedTriangles[index]); // Translate the triangle
+            scale(adjustedTriangles[index], triangles[index]); //Scale the triangle
+            rotate(adjustedTriangles[index], adjustedTriangles[index]); //Rotate the triangle
+            adjust(adjustedTriangles[index], adjustedTriangles[index]); //Translate the triangle
         }
     }
 
-    // Getters for object properties
+    //Getters for object properties
     public String getName() {
         return this.name;
     }
@@ -106,35 +106,35 @@ public class RenderObject {
         return colourShader;
     }
 
-    // Setters for object properties with automatic adjustment of triangles
+    //Setters for object properties with automatic adjustment of triangles
     public void setPosition(Vertex newPosition) {
         this.position = newPosition;
-        adjustTriangles(); // Recalculate adjusted triangles based on new position
+        adjustTriangles(); //Recalculate adjusted triangles based on new position
     }
 
     public void alterPosition(Vertex alteration) {
         this.position = Vertex.add(position, alteration);
-        adjustTriangles(); // Recalculate adjusted triangles based on updated position
+        adjustTriangles(); //Recalculate adjusted triangles based on updated position
     }
 
     public void setScale(Vertex newScale) {
         this.scale = newScale;
-        adjustTriangles(); // Recalculate adjusted triangles based on new scale
+        adjustTriangles(); //Recalculate adjusted triangles based on new scale
     }
 
     public void alterScale(Vertex alteration) {
         this.scale = Vertex.add(scale, alteration);
-        adjustTriangles(); // Recalculate adjusted triangles based on updated scale
+        adjustTriangles(); //Recalculate adjusted triangles based on updated scale
     }
 
     public void setRotation(Vertex newRotation) {
         this.rotation = newRotation;
-        adjustTriangles(); // Recalculate adjusted triangles based on new rotation
+        adjustTriangles(); //Recalculate adjusted triangles based on new rotation
     }
 
     public void alterRotation(Vertex alteration) {
         this.rotation = Vertex.add(rotation, alteration);
-        adjustTriangles(); // Recalculate adjusted triangles based on updated rotation
+        adjustTriangles(); //Recalculate adjusted triangles based on updated rotation
     }
 
     public void setColour(ColourShader colourShader) {
@@ -222,17 +222,17 @@ public class RenderObject {
             reader = new BufferedReader(new FileReader(objPath));
             line = "";
 
-            // Parse the .obj file to find vertices and faces
+            //Parse the .obj file to find vertices and faces
             while ((line = reader.readLine()) != null) {
                 String[] lineS = line.split(" ");
-                if (lineS[0].equals("v")) { // Vertex line
+                if (lineS[0].equals("v")) { //Vertex line
                     if (firstLineVertex == lastLineVertex) {
                         firstLineVertex = lineIndex;
                         lastLineVertex = lineIndex + 1;
                     } else {
                         lastLineVertex = lineIndex;
                     }
-                } else if (lineS[0].equals("f")) { // Face line
+                } else if (lineS[0].equals("f")) { //Face line
                     if (firstLineFace == lastLineFace) {
                         firstLineFace = lineIndex;
                         lastLineFace = lineIndex + 1;
@@ -244,7 +244,7 @@ public class RenderObject {
             }
             reader.close();
 
-            // Allocate memory for vertices and triangles
+            //Allocate memory for vertices and triangles
             vertices = new Vertex[lastLineVertex - firstLineVertex + 1];
             triangles = new Triangle[lastLineFace - firstLineFace + 1];
 
@@ -252,17 +252,17 @@ public class RenderObject {
             line = "";
             lineIndex = 1;
 
-            // Parse the .obj file and extract vertex and face data
+            //Parse the .obj file and extract vertex and face data
             while ((line = reader.readLine()) != null) {
                 String[] lineS = line.split(" ");
                 if (firstLineVertex <= lineIndex && lineIndex <= lastLineVertex) {
-                    // Parse vertex positions
+                    //Parse vertex positions
                     float valueOne = Float.parseFloat(lineS[1]);
                     float valueTwo = Float.parseFloat(lineS[2]);
                     float valueThree = Float.parseFloat(lineS[3]);
                     vertices[lineIndex - firstLineVertex] = new Vertex(valueOne, valueTwo, valueThree);
                 } else if (firstLineFace <= lineIndex && lineIndex <= lastLineFace) {
-                    // Parse face (triangle) indices
+                    //Parse face (triangle) indices
                     int valueOne = Integer.parseInt(lineS[1].split("/")[0]);
                     int valueTwo = Integer.parseInt(lineS[2].split("/")[0]);
                     int valueThree = Integer.parseInt(lineS[3].split("/")[0]);
@@ -280,7 +280,7 @@ public class RenderObject {
             e.printStackTrace();
         }
 
-        // Create and return the RenderObject with loaded triangles
+        //Create and return the RenderObject with loaded triangles
         return new RenderObject(name, triangles, position, new Vertex(1, 1, 1), new Vertex(0, 0, 0), colourShader);
     }
 }

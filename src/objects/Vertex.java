@@ -6,7 +6,7 @@ package objects;
  * magnitude calculation, multiplication, division, and rotation.
  */
 public class Vertex {
-    // Public fields for the x, y, and z coordinates of the vertex
+    //Public fields for the x, y, and z coordinates of the vertex
     public float x;
     public float y;
     public float z;
@@ -52,7 +52,7 @@ public class Vertex {
      * @return The magnitude of the vector.
      */
     public float magnitude() {
-        return (float) Math.pow(x * x + y * y + z * z, 0.5); // Euclidean distance formula
+        return (float) Math.pow(x * x + y * y + z * z, 0.5); //Euclidean distance formula
     }
 
     /**
@@ -96,7 +96,7 @@ public class Vertex {
      * @return A new Vertex representing the rotated coordinates of v1.
      */
     public static Vertex rotate(Vertex v1, Vertex v2) {
-        // Calculate sine and cosine values for each rotation angle (negated)
+        //Calculate sine and cosine values for each rotation angle (negated)
         Vertex c = new Vertex(0, 0, 0);
         Vertex s = new Vertex(0, 0, 0);
         s.x = (float) Math.sin(-v2.x);
@@ -106,7 +106,7 @@ public class Vertex {
         c.y = (float) Math.cos(-v2.y);
         c.z = (float) Math.cos(-v2.z);
         
-        // Rotate the vertex using precomputed sine and cosine values
+        //Rotate the vertex using precomputed sine and cosine values
         return rotateWithSinCos(v1, s, c);
     }
 
@@ -124,12 +124,12 @@ public class Vertex {
         float y = v1.y;
         float z = v1.z;
         
-        // Perform 3D rotation calculations for each axis
+        //Perform 3D rotation calculations for each axis
         float dX = c.y * (s.z * y + c.z * x) - s.y * z;
         float dY = s.x * (c.y * z + s.y * (s.z * y + c.z * x)) + c.x * (c.z * y - s.z * x);
         float dZ = c.x * (c.y * z + s.y * (s.z * y + c.z * x)) - s.x * (c.z * y - s.z * x);
         
-        // Return the new rotated vertex
+        //Return the new rotated vertex
         return new Vertex(dX, dY, dZ);
     }
 }

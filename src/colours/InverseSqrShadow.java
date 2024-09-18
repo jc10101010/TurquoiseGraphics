@@ -12,13 +12,13 @@ import objects.Vertex;
  */
 public class InverseSqrShadow extends ColourShader {
     
-    // The base colour of the object
+    //The base colour of the object
     private Color colour;
     
-    // Factor used to control the shading intensity based on distance
+    //Factor used to control the shading intensity based on distance
     private float shaderFactor;
     
-    // Reference to the scene to get the camera's position
+    //Reference to the scene to get the camera's position
     private Scene scene;
 
     /**
@@ -29,8 +29,8 @@ public class InverseSqrShadow extends ColourShader {
      */
     public InverseSqrShadow(Color colour, Scene scene) {
         this.colour = colour; 
-        this.shaderFactor = 0.03f; // Controls the intensity of the shading effect
-        this.scene = scene; // Store the reference to the scene for camera position access
+        this.shaderFactor = 0.03f; //Controls the intensity of the shading effect
+        this.scene = scene; //Store the reference to the scene for camera position access
     }
 
     /**
@@ -43,18 +43,18 @@ public class InverseSqrShadow extends ColourShader {
      */
     @Override
     public Color shadeBasedOnTriangle(Triangle triangle) {
-        // Average the triangle's vertices into a single point for shading calculation
+        //Average the triangle's vertices into a single point for shading calculation
         Vertex tV = averageTriangleAsVertex(triangle);
 
-        // Calculate the distance from the triangle to the camera
+        //Calculate the distance from the triangle to the camera
         Vertex diff = Vertex.difference(tV, scene.getCamPos());
 
-        // Adjust the RGB values based on the inverse square of the distance and shaderFactor
+        //Adjust the RGB values based on the inverse square of the distance and shaderFactor
         int red = (int) Math.round(inverseSquare(diff.magnitude() * shaderFactor) * colour.getRed());
         int green = (int) Math.round(inverseSquare(diff.magnitude() * shaderFactor) * colour.getGreen());
         int blue = (int) Math.round(inverseSquare(diff.magnitude() * shaderFactor) * colour.getBlue());
 
-        // Return the final shaded colour
+        //Return the final shaded colour
         Color finalColour = new Color(red, green, blue);
         return finalColour;
     }

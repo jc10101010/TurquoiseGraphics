@@ -10,23 +10,23 @@ import objects.*;
 
 public class ConsolePanel {
 
-    // Constants for screen dimensions in characters
+    //Constants for screen dimensions in characters
     private static final int SCREEN_WIDTH = 120;
     private static final int SCREEN_HEIGHT = 60;
     
-    // Buffer to hold characters that will be displayed on the console
+    //Buffer to hold characters that will be displayed on the console
     private char[][] screenBuffer = new char[SCREEN_HEIGHT][SCREEN_WIDTH];
 
-    // Scaling factors for the graphics. These control the size of rendered objects on the screen
-    private float graphicsRatio = 0.5f; // Ratio for scaling dodecahedron
-    private float verticalGraphicsRatio = graphicsRatio * -1; // Inverts the dodecahedron vertically
+    //Scaling factors for the graphics. These control the size of rendered objects on the screen
+    private float graphicsRatio = 0.5f; //Ratio for scaling dodecahedron
+    private float verticalGraphicsRatio = graphicsRatio * -1; //Inverts the dodecahedron vertically
 
-    // Scene and rendering details
+    //Scene and rendering details
     private Scene scene;
-    private Color outline = Color.BLACK; // Outline color for objects
-    private Font font = new Font( "SansSerif", Font.PLAIN, 23 ); // Font settings for rendering
+    private Color outline = Color.BLACK; //Outline color for objects
+    private Font font = new Font( "SansSerif", Font.PLAIN, 23 ); //Font settings for rendering
 
-    private Game game; // The game logic object
+    private Game game; //The game logic object
 
     /**
      * Constructor sets up the scene and initializes the game.
@@ -35,10 +35,10 @@ public class ConsolePanel {
      * @param h Height of the panel (not used directly for console rendering).
      */
     public ConsolePanel(int w, int h) { 
-        // Initialize the scene with an empty list of render objects
+        //Initialize the scene with an empty list of render objects
         scene = new Scene(new ArrayList<RenderObject> (Arrays.asList()));
         
-        // Create a new game instance, passing the scene and this console panel
+        //Create a new game instance, passing the scene and this console panel
         game = new Game(scene, this);
     }
 
@@ -46,11 +46,11 @@ public class ConsolePanel {
      * Clears the screen buffer and prints a terminal command to clear the console.
      */
     private void clearScreenBuffer() {
-        // Clear the console screen using terminal escape codes
+        //Clear the console screen using terminal escape codes
         System.out.print("\033[H\033[2J");   
         System.out.flush();   
         
-        // Fill the screen buffer with spaces (empty characters)
+        //Fill the screen buffer with spaces (empty characters)
         for (int y = 0; y < SCREEN_HEIGHT; y++) {
             Arrays.fill(screenBuffer[y], ' ');
         }
@@ -63,13 +63,13 @@ public class ConsolePanel {
      * @param g Graphics object (not used for console-based rendering).
      */
     protected void paintComponent(Graphics g) {
-        // Clear the screen buffer before rendering the next frame
+        //Clear the screen buffer before rendering the next frame
         clearScreenBuffer();
         
-        // Update the game state
+        //Update the game state
         game.tick();
         
-        // Draw the current scene
+        //Draw the current scene
         drawSceneToScreen();
     }
 
@@ -80,15 +80,15 @@ public class ConsolePanel {
      * @param ch The character used for drawing the outline.
      */
     private void outlineTriangle(Triangle2D triangle2d, char ch) {
-        // Get the x and y coordinates of the triangle's vertices
+        //Get the x and y coordinates of the triangle's vertices
         float[] xPoints = triangle2d.xValues();
         float[] yPoints = triangle2d.yValues();
     
-        // Convert the triangle coordinates to screen coordinates
+        //Convert the triangle coordinates to screen coordinates
         int[] xScreen = fitAxisToScreen(xPoints, false);
         int[] yScreen = fitAxisToScreen(yPoints, true);
     
-        // Draw the triangle's three edges
+        //Draw the triangle's three edges
         drawLine(xScreen[0], yScreen[0], xScreen[1], yScreen[1], ch);
         drawLine(xScreen[1], yScreen[1], xScreen[2], yScreen[2], ch);
         drawLine(xScreen[2], yScreen[2], xScreen[0], yScreen[0], ch);
@@ -101,15 +101,15 @@ public class ConsolePanel {
      * @param ch The character used to fill the triangle.
      */
     private void fillTriangle(Triangle2D triangle2d, char ch) {
-        // Get the x and y coordinates of the triangle's vertices
+        //Get the x and y coordinates of the triangle's vertices
         float[] xPoints = triangle2d.xValues();
         float[] yPoints = triangle2d.yValues();
     
-        // Convert the triangle coordinates to screen coordinates
+        //Convert the triangle coordinates to screen coordinates
         int[] xScreen = fitAxisToScreen(xPoints, false);
         int[] yScreen = fitAxisToScreen(yPoints, true);
     
-        // Rasterize the triangle (fill it in with the character)
+        //Rasterize the triangle (fill it in with the character)
         rasterizeTriangle(xScreen, yScreen, ch);
     }
 
@@ -119,10 +119,10 @@ public class ConsolePanel {
     private void outputScreenBufferToConsole() {
         for (int y = 0; y < SCREEN_HEIGHT; y++) {
             for (int x = 0; x < SCREEN_WIDTH; x++) {
-                // Print each character in the buffer
+                //Print each character in the buffer
                 System.out.print(screenBuffer[y][x]);
             }
-            // Move to the next line after printing each row
+            //Move to the next line after printing each row
             System.out.println();
         }
     }
@@ -132,27 +132,27 @@ public class ConsolePanel {
      * Clears the buffer, renders the scene, and outputs it to the console.
      */
     private void drawSceneToScreen() {
-        // Clear the buffer for the next frame
+        //Clear the buffer for the next frame
         clearScreenBuffer();
     
-        // Render the current scene
+        //Render the current scene
         scene.renderScene();
     
-        // Retrieve the rendered triangles and other details
+        //Retrieve the rendered triangles and other details
         Triangle2D[] trianglesToDisplay = scene.getRenderedTriangles();
         Color[] colours = scene.getColours();
         String[] names = scene.getNames();
         
-        // Loop through all triangles in the scene and draw them
+        //Loop through all triangles in the scene and draw them
         for (int index = 0; index < scene.getCount(); index++) {
             if (trianglesToDisplay[index] != null) {
-                // Outline the triangle with '*' and fill it with '#'
+                //Outline the triangle with '*' and fill it with '#'
                 outlineTriangle(trianglesToDisplay[index], '*');
                 fillTriangle(trianglesToDisplay[index], '#');
             }
         }
     
-        // Output the final rendered screen buffer to the console
+        //Output the final rendered screen buffer to the console
         outputScreenBufferToConsole();
     }
     
@@ -164,7 +164,7 @@ public class ConsolePanel {
      * @param ch The character to plot.
      */
     private void plotPixel(int x, int y, char ch) {
-        // Only plot the pixel if it's within the bounds of the screen
+        //Only plot the pixel if it's within the bounds of the screen
         if (x >= 0 && x < SCREEN_WIDTH && y >= 0 && y < SCREEN_HEIGHT) {
             screenBuffer[y][x] = ch;
         }
@@ -178,27 +178,27 @@ public class ConsolePanel {
      * @param ch The character used to fill the triangle.
      */
     private void rasterizeTriangle(int[] x, int[] y, char ch) {
-        // Sort the vertices by their y-coordinate
+        //Sort the vertices by their y-coordinate
         int[] sortedIndices = sortIndicesByY(y);
         int x0 = x[sortedIndices[0]], y0 = y[sortedIndices[0]];
         int x1 = x[sortedIndices[1]], y1 = y[sortedIndices[1]];
         int x2 = x[sortedIndices[2]], y2 = y[sortedIndices[2]];
     
-        // Compute the slopes of the triangle sides
+        //Compute the slopes of the triangle sides
         float invSlope1 = (y1 - y0 != 0) ? (float)(x1 - x0) / (y1 - y0) : 0;
         float invSlope2 = (y2 - y0 != 0) ? (float)(x2 - x0) / (y2 - y0) : 0;
     
-        // Rasterize the lower part of the triangle (from y0 to y1)
+        //Rasterize the lower part of the triangle (from y0 to y1)
         for (int scanY = y0; scanY <= y1; scanY++) {
             int xStart = (int)(x0 + (scanY - y0) * invSlope1);
             int xEnd = (int)(x0 + (scanY - y0) * invSlope2);
             drawHorizontalLine(xStart, xEnd, scanY, ch);
         }
     
-        // Compute the slope for the upper part of the triangle (from y1 to y2)
+        //Compute the slope for the upper part of the triangle (from y1 to y2)
         invSlope1 = (y2 - y1 != 0) ? (float)(x2 - x1) / (y2 - y1) : 0;
     
-        // Rasterize the upper part of the triangle (from y1 to y2)
+        //Rasterize the upper part of the triangle (from y1 to y2)
         for (int scanY = y1; scanY <= y2; scanY++) {
             int xStart = (int)(x1 + (scanY - y1) * invSlope1);
             int xEnd = (int)(x0 + (scanY - y0) * invSlope2);
@@ -214,7 +214,7 @@ public class ConsolePanel {
      */
     private int[] sortIndicesByY(int[] y) {
         Integer[] indices = {0, 1, 2};
-        // Sort indices by comparing the y-values
+        //Sort indices by comparing the y-values
         Arrays.sort(indices, (i1, i2) -> Integer.compare(y[i1], y[i2]));
         return Arrays.stream(indices).mapToInt(i -> i).toArray();
     }
@@ -228,17 +228,17 @@ public class ConsolePanel {
      * @param ch The character used to draw the line.
      */
     private void drawHorizontalLine(int xStart, int xEnd, int y, char ch) {
-        // Make sure the y-coordinate is within the screen bounds
+        //Make sure the y-coordinate is within the screen bounds
         if (y < 0 || y >= SCREEN_HEIGHT) return;
         
-        // Swap xStart and xEnd if xStart is greater than xEnd
+        //Swap xStart and xEnd if xStart is greater than xEnd
         if (xStart > xEnd) {
             int temp = xStart;
             xStart = xEnd;
             xEnd = temp;
         }
 
-        // Draw the line by plotting each character between xStart and xEnd
+        //Draw the line by plotting each character between xStart and xEnd
         for (int x = xStart; x <= xEnd; x++) {
             plotPixel(x, y, ch);
         }
@@ -261,13 +261,13 @@ public class ConsolePanel {
         int err = dx + dy;
 
         while (true) {
-            // Plot the current pixel
+            //Plot the current pixel
             plotPixel(x0, y0, ch);
 
-            // If the current point is the end point, stop drawing
+            //If the current point is the end point, stop drawing
             if (x0 == x1 && y0 == y1) break;
 
-            // Adjust error and move in x or y direction
+            //Adjust error and move in x or y direction
             int e2 = 2 * err;
             if (e2 >= dy) {
                 err += dy;
@@ -291,10 +291,10 @@ public class ConsolePanel {
         int[] screenValues = new int[axisValues.length];
         for (int i = 0; i < axisValues.length; i++) {
             if (isYAxis) {
-                // Convert normalized y-coordinate to screen y-coordinate
+                //Convert normalized y-coordinate to screen y-coordinate
                 screenValues[i] = (int)((1 - axisValues[i]) * (SCREEN_HEIGHT - 1) / 2);
             } else {
-                // Convert normalized x-coordinate to screen x-coordinate
+                //Convert normalized x-coordinate to screen x-coordinate
                 screenValues[i] = (int)((axisValues[i] + 1) * (SCREEN_WIDTH - 1) / 2);
             }
         }
@@ -310,7 +310,7 @@ public class ConsolePanel {
      */
     private int valFromOneToScreen(float value, boolean vertical) {
         int bigAxis = Math.max(SCREEN_WIDTH, SCREEN_HEIGHT);
-        // Scale the value based on whether it's for the vertical or horizontal axis
+        //Scale the value based on whether it's for the vertical or horizontal axis
         if (vertical) {
             return (int) ((value / 2) * verticalGraphicsRatio * bigAxis + (SCREEN_HEIGHT / 2));
         } else {

@@ -9,12 +9,12 @@ import objects.Vertex;
  */
 public class HorizontalShader extends ColourShader {
     
-    // The base colour of the object
+    //The base colour of the object
     private Color colour; 
 
-    // Parameters to adjust the shading effect
-    private float axisAdjust = 0.4f; // Shifts the point where shading begins on the x-axis
-    private float inputMult = 0.5f; // Multiplier to control the intensity of the shadow effect
+    //Parameters to adjust the shading effect
+    private float axisAdjust = 0.4f; //Shifts the point where shading begins on the x-axis
+    private float inputMult = 0.5f; //Multiplier to control the intensity of the shadow effect
     
     /**
      * Constructor to initialize the HorizontalShader with a base colour.
@@ -22,7 +22,7 @@ public class HorizontalShader extends ColourShader {
      * @param colour The base colour of the object.
      */
     public HorizontalShader(Color colour) {
-        this.colour = colour; // Store the base colour of the object
+        this.colour = colour; //Store the base colour of the object
     }
 
     /**
@@ -34,23 +34,23 @@ public class HorizontalShader extends ColourShader {
      */
     @Override
     public Color shadeBasedOnTriangle(Triangle triangle) {
-        // Average the triangle's vertices into a single point to apply the shading
+        //Average the triangle's vertices into a single point to apply the shading
         Vertex tV = averageTriangleAsVertex(triangle);
 
-        // Calculate a value based on the x and z position to determine the shading effect
+        //Calculate a value based on the x and z position to determine the shading effect
         float axisValue = (tV.x + (-tV.z / 2)) / 1.5f;
 
-        // Apply the shading to the RGB components based on the axis value
+        //Apply the shading to the RGB components based on the axis value
         int red = capRGB((int) Math.round(newShadow(inputMult * (axisValue - axisAdjust)) * colour.getRed()));
         int green = capRGB((int) Math.round(newShadow(inputMult * (axisValue - axisAdjust)) * colour.getGreen()));
         int blue = capRGB((int) Math.round(newShadow(inputMult * (axisValue - axisAdjust)) * colour.getBlue()));
 
-        // If the triangle is not on the negative x-axis, return the base colour without shading
+        //If the triangle is not on the negative x-axis, return the base colour without shading
         if (axisValue > axisAdjust) {
             return colour;
         }
 
-        // Return the final shaded colour based on the calculated RGB values
+        //Return the final shaded colour based on the calculated RGB values
         Color finalColour = new Color(red, green, blue);
         return finalColour;
     }

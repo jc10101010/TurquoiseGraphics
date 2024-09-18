@@ -10,14 +10,14 @@ import objects.Vertex;
  */
 public abstract class Event {
 
-    // Fields for event timing and position
-    protected float startTime; // The time when the event started
-    protected float endTime; // The time when the event is expected to end
-    protected Vertex startPosition; // The starting position of the object
-    protected Vertex endPosition; // The ending position of the object
-    protected boolean done = false; // Indicates if the event is finished
-    protected boolean started = false; // Indicates if the event has started
-    protected float duration; // The duration of the event in seconds
+    //Fields for event timing and position
+    protected float startTime; //The time when the event started
+    protected float endTime; //The time when the event is expected to end
+    protected Vertex startPosition; //The starting position of the object
+    protected Vertex endPosition; //The ending position of the object
+    protected boolean done = false; //Indicates if the event is finished
+    protected boolean started = false; //Indicates if the event has started
+    protected float duration; //The duration of the event in seconds
 
     /**
      * Constructor to initialize an event with starting and ending positions and a duration.
@@ -40,16 +40,16 @@ public abstract class Event {
      * @param position The position from which the event starts (if startPosition is null).
      */
     public void startTimer(Vertex position) {
-        started = true; // Mark the event as started
+        started = true; //Mark the event as started
 
-        // If no start position is provided, use the given position as the starting point
+        //If no start position is provided, use the given position as the starting point
         if (startPosition == null) {
             startPosition = position;
         }
 
-        // Record the current system time as the start time and calculate the end time
+        //Record the current system time as the start time and calculate the end time
         startTime = System.currentTimeMillis();
-        endTime = startTime + (duration * 1000); // Convert duration from seconds to milliseconds
+        endTime = startTime + (duration * 1000); //Convert duration from seconds to milliseconds
     }
 
     /**
@@ -67,15 +67,15 @@ public abstract class Event {
      * @return The current position as a Vertex based on the event's progress.
      */
     public Vertex calcCamPosition() {
-        float progress = onCurve(); // Get the current progress on the curve (0 to 1)
+        float progress = onCurve(); //Get the current progress on the curve (0 to 1)
         
-        // Calculate the difference between the end and start positions
+        //Calculate the difference between the end and start positions
         Vertex goal = Vertex.difference(endPosition, startPosition);
         
-        // Scale the difference by the progress value to determine how far along the transition we are
+        //Scale the difference by the progress value to determine how far along the transition we are
         Vertex goalScaled = Vertex.multiply(goal, new Vertex(progress, progress, progress));
         
-        // Add the scaled difference to the start position to get the current position
+        //Add the scaled difference to the start position to get the current position
         Vertex finalProgress = Vertex.add(startPosition, goalScaled);
 
         return finalProgress;
@@ -89,10 +89,10 @@ public abstract class Event {
      * @return A float value between 0 and 1 indicating the time-based progress of the event.
      */
     protected float timeProgress() {
-        // Calculate the time progress by dividing elapsed time by total event duration
+        //Calculate the time progress by dividing elapsed time by total event duration
         float progress = (System.currentTimeMillis() - startTime) / (endTime - startTime);
 
-        // If progress exceeds 1, mark the event as done and cap the progress at 1
+        //If progress exceeds 1, mark the event as done and cap the progress at 1
         if (progress > 1) {
             done = true;
             return 1;
