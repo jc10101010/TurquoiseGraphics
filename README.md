@@ -107,8 +107,6 @@ public class MyCustomShader extends ColourShader {
 
 This shader darkens the object based on its distance from the camera, simulating a light falloff effect.
 
-Sure! Below is an updated section of the README that explains the console version and how you can adapt the GUI-agnostic approach for a new GUI by rewriting key methods (`drawSceneToScreen`, `fillTriangle`, and `outlineTriangle`).
-
 ---
 
 ### GUI-Agnostic Rendering
