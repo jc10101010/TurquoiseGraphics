@@ -1,29 +1,28 @@
-# Turquoise Graphics - A GUI-Agnostic 3D Graphics Engine in Java
+# Turquoise Graphics - A Lightweight 3D Graphics Engine in Java
 
-Turquoise Graphics is a flexible, GUI-agnostic 3D rendering engine designed in Java. It allows users to import 3D models, apply custom shaders, and perform transformations such as positioning, scaling, and rotating objects. This engine can be integrated with any GUI framework (or even console-based applications) while keeping rendering logic independent of the UI implementation. This repository includes a sample implementation using Swing.
+Turquoise Graphics is a versatile, GUI-independent 3D rendering engine written in Java. This engine allows users to import 3D models, apply custom shaders, and perform a variety of transformations like positioning, scaling, and rotating objects. It can be easily integrated with any GUI framework or even used for console-based applications, providing flexibility in how you design and present 3D scenes. This repository includes a sample implementation using Java Swing for demonstration purposes.
 
 ## Features
 
-- **OBJ File Importing:** Quickly import 3D models in the OBJ format.
-- **Customizable Shaders:** Use `ColourShaders` to fully customize graphical outputs.
-- **3D Transformations:** Position, scale, and rotate objects in a 3D scene.
-- **GUI Agnostic:** Can be integrated with any GUI system, including console applications.
-- **Swing Example:** A sample implementation using Java Swing is included.
+- **OBJ File Importing:** Supports importing 3D models in the OBJ format for easy integration of external models into your scenes.
+- **Customizable Shaders:** Define custom shading logic using `ColourShader` to control how objects are rendered visually, including shadow effects, lighting simulations, and colour adjustments.
+- **3D Transformations:** Easily manipulate 3D objects with support for positioning, scaling, and rotating in the 3D space.
+- **Flexible Rendering:** The engine is designed to be independent of any specific GUI framework, making it adaptable for both graphical user interfaces (like Swing) or non-GUI environments (like the console).
+- **Scene Management:** Manage multiple objects, apply transformations dynamically, and control camera movements.
+- **Swing Example:** The repository includes a basic Swing-based implementation to demonstrate how to use the engine in a desktop GUI environment.
 
 ## Getting Started
 
 ### Prerequisites
 
-To use Turquoise Graphics, ensure you have the following installed:
+Before using Turquoise Graphics, ensure you have the following set up on your system:
 
-- [Java Development Kit (JDK)](https://www.oracle.com/java/technologies/javase-downloads.html) 8 or later
-- A terminal or command-line interface to run scripts
+- [Java Development Kit (JDK)](https://www.oracle.com/java/technologies/javase-downloads.html) version 8 or later
+- A terminal or command-line interface to compile and run Java programs
 
 ### Running the Swing Implementation
 
-The provided implementation in this repository demonstrates how to use the engine with a Java Swing-based interface.
-
-To run the Swing example, follow these steps:
+This repository provides a sample implementation of the engine using Java Swing. Follow these steps to compile and run the Swing demo:
 
 1. Clone the repository:
    ```bash
@@ -36,44 +35,172 @@ To run the Swing example, follow these steps:
    bash crGame.sh
    ```
 
-   This will build and execute the game using the Swing implementation.
+   This script will compile and execute the demo, showcasing a basic 3D scene rendered using Swing.
 
 ### Usage
 
-Turquoise Graphics allows users to render 3D objects, manipulate them, and apply shaders. While this implementation demonstrates usage in Swing, the engine can be adapted to other GUIs, allowing flexibility.
+Turquoise Graphics allows users to render 3D models, manipulate their positions, rotations, and scales, and apply shaders for custom visual effects. While the provided implementation demonstrates usage within Swing, the engine is designed to be modular and can be adapted to different graphical frameworks.
 
-#### Key Classes:
+#### Key Components:
 
-- **`GPanel`**: The main panel for rendering graphics.
-- **`GFrame`**: A container for the `GPanel`, managing the Swing window.
-- **`Game`**: The main game loop and logic.
-- **`RenderObject`**: Represents 3D objects in the scene, responsible for transformations and rendering.
-- **`Scene`**: Manages the collection of objects and their interactions in the 3D space.
+- **`GPanel`**: The primary panel responsible for rendering the scene and handling graphical updates. It acts as a canvas where the 3D objects are projected and displayed.
+- **`GFrame`**: The window container for `GPanel`, managing the overall Swing-based window.
+- **`Game`**: The game logic, including input handling, updates, and interactions with the scene and camera.
+- **`RenderObject`**: Represents an individual 3D object loaded from an OBJ file. It manages the object's transformations (position, rotation, scale) and applies shading during rendering.
+- **`Scene`**: A container for managing multiple `RenderObject`s. It handles rendering, object management, and interactions between objects and the camera.
+- **`CameraEvent`**: Manages the camera's movement and rotation over time, allowing smooth transitions between camera positions or animations.
 
-### Customization
+### Customization and Extensions
 
-You can modify and extend the library to suit your needs. Some common customizations include:
+Turquoise Graphics is designed to be extensible, enabling you to customize various aspects of the engine:
 
-- **Shaders:** Modify or create custom `ColourShaders` to adjust how objects are visually rendered.
-- **Event Handling:** Handle user inputs (keyboard or mouse) to interact with the scene.
-- **Scene Composition:** Add or remove objects dynamically, or adjust transformations (position, rotation, scaling) of objects during runtime.
+- **Custom Shaders:** Implement custom shaders by extending `ColourShader`. These shaders allow you to define how objects in the scene are visually rendered, enabling effects like shadows, light falloff, and surface reflection.
+- **Camera and Event Handling:** Use `CameraEvent` to create custom animations or smooth transitions for the camera, allowing complex camera behavior like panning, zooming, or rotating around objects.
+- **Dynamic Scene Composition:** Add or remove objects from the scene in real-time. You can also adjust the transformations (position, rotation, scale) of objects based on user input or game logic.
 
-## Example
+## Example: Adding and Rendering a 3D Object
 
-Here’s a simple example of how to initialize a 3D object, apply a shader, and add it to a scene:
+Below is a simple example of how to load a 3D object from an OBJ file, apply a custom shader, and add it to the scene for rendering:
 
 ```java
-// Create a new renderable object from an OBJ file
-RenderObject obj = new RenderObject("path/to/model.obj");
+// Load a 3D object from an OBJ file
+RenderObject obj = RenderObject.loadObject("path/to/model.obj", "MyObject", new NonShadow(Color.BLUE), new Vertex(0, 0, -10));
 
-// Apply a custom shader
-obj.setShader(new ColourShader(Color.BLUE));
+// Set transformations for the object
+obj.setScale(new Vertex(1.5f, 1.5f, 1.5f));  // Scale the object
+obj.setRotation(new Vertex(45, 30, 0));      // Rotate the object
+obj.setPosition(new Vertex(0, 0, -10));      // Position the object
 
-// Set object transformations
-obj.setPosition(0, 0, -10);
-obj.setScale(1.5);
-obj.setRotation(45, 30, 0);
-
-// Add object to the scene
+// Add the object to the scene
 scene.addObject(obj);
 ```
+
+## Shader Customization Example
+
+To create a custom shader, you can extend `ColourShader` and define how the triangle's data (such as its vertices) and its base colour should be processed into a final colour:
+
+```java
+public class MyCustomShader extends ColourShader {
+    
+    private Color baseColour;
+
+    public MyCustomShader(Color baseColour) {
+        this.baseColour = baseColour;
+    }
+
+    @Override
+    public Color shadeBasedOnTriangle(Triangle triangle) {
+        // Implement custom shading logic
+        Vertex avgVertex = averageTriangleAsVertex(triangle);
+        float distance = avgVertex.magnitude();
+        float shadingFactor = inverseSquare(distance);
+
+        // Modify the base colour based on the shading factor
+        int red = (int)(baseColour.getRed() * shadingFactor);
+        int green = (int)(baseColour.getGreen() * shadingFactor);
+        int blue = (int)(baseColour.getBlue() * shadingFactor);
+
+        return new Color(capRGB(red), capRGB(green), capRGB(blue));
+    }
+}
+```
+
+This shader darkens the object based on its distance from the camera, simulating a light falloff effect.
+
+Sure! Below is an updated section of the README that explains the console version and how you can adapt the GUI-agnostic approach for a new GUI by rewriting key methods (`drawSceneToScreen`, `fillTriangle`, and `outlineTriangle`).
+
+---
+
+### GUI-Agnostic Rendering
+
+One of the core strengths of **Turquoise Graphics** is its **GUI-agnostic design**, allowing the 3D rendering engine to be used across different front-end interfaces, whether graphical user interfaces (GUI) or text-based consoles. This flexibility means you can plug the engine into various types of applications, from desktop GUIs to terminal-based environments, without rewriting the core 3D rendering logic.
+
+#### Console Version
+A key example of this adaptability is the **console version** provided in this repository. The `ConsolePanel` class renders 3D objects as ASCII characters directly to the terminal, instead of using a graphical window. It uses characters like `*` to draw outlines and `#` to fill objects, demonstrating how the engine can function even in environments that don't support pixel-based rendering.
+
+The console version highlights how the rendering logic (e.g., converting 3D triangles into 2D projections, handling transformations) remains the same, but the output medium changes to fit a text-based environment.
+
+#### Adapting to a New GUI
+
+If you want to adapt the engine to a new GUI framework (e.g., JavaFX, OpenGL, or web-based systems), you need to rewrite some of the methods responsible for rendering the scene. The core engine manages 3D transformations, scene composition, and shading consistently across any environment. Below are key methods you would modify when integrating Turquoise Graphics into a new GUI.
+
+##### 1. `drawSceneToScreen`
+
+This method is responsible for iterating through the objects in the scene, converting their 3D coordinates into 2D, and rendering them onto the screen. In a new GUI, this method will need to replace the specific drawing functions (e.g., Swing's `g.drawPolygon()` or terminal output in the console version) with the rendering functions of your target GUI.
+
+**Example for a New GUI:**
+```java
+private void drawSceneToScreen(NewGUIRenderer renderer) {
+    Triangle2D[] trianglesToDisplay = scene.getRenderedTriangles();
+    Color[] colours = scene.getColours();
+    
+    for (int index = 0; index < scene.getCount(); index++) {
+        if (trianglesToDisplay[index] != null) {
+            outlineTriangle(trianglesToDisplay[index], colours[index], renderer);
+            fillTriangle(trianglesToDisplay[index], colours[index], renderer);
+        }
+    }
+}
+```
+The `NewGUIRenderer` would handle the actual rendering calls, such as filling and outlining polygons in the new graphical system.
+
+##### 2. `fillTriangle`
+
+This method fills a triangle with a specific color. When adapting it to a new GUI, you replace the way the triangle is filled in the target environment, such as with a `GraphicsContext` for JavaFX or with vertex shaders for OpenGL.
+
+**Example for a New GUI:**
+```java
+private void fillTriangle(Triangle2D triangle, Color colour, NewGUIRenderer renderer) {
+    float[] xPoints = triangle.xValues();
+    float[] yPoints = triangle.yValues();
+    
+    renderer.setFillColour(colour);
+    renderer.fillPolygon(convertToScreenCoords(xPoints), convertToScreenCoords(yPoints));
+}
+```
+Here, `NewGUIRenderer` would handle the polygon filling, depending on the rendering system.
+
+##### 3. `outlineTriangle`
+
+This method draws the outline of a triangle. You would rewrite it to use the appropriate drawing functions in the new GUI framework.
+
+**Example for a New GUI:**
+```java
+private void outlineTriangle(Triangle2D triangle, Color colour, NewGUIRenderer renderer) {
+    float[] xPoints = triangle.xValues();
+    float[] yPoints = triangle.yValues();
+    
+    renderer.setOutlineColour(colour);
+    renderer.drawPolygon(convertToScreenCoords(xPoints), convertToScreenCoords(yPoints));
+}
+```
+This would replace Swing's `g.drawPolygon()` with the equivalent rendering call in the new GUI system.
+
+#### Customization for Different GUIs
+
+Depending on the target GUI system, you will need to adapt these methods accordingly:
+
+- **JavaFX**: Use `GraphicsContext.fillPolygon()` and `GraphicsContext.strokePolygon()` for filling and outlining triangles.
+- **OpenGL (JOGL)**: Set up vertex arrays and shaders for drawing triangles.
+- **Web (e.g., WebGL)**: Use web-based APIs to handle rendering and transformations.
+
+#### Console Version Example
+
+The console version demonstrates the flexibility of this design. Instead of using a GUI framework like Swing, it outputs the rendering to a terminal using characters. The same `drawSceneToScreen`, `fillTriangle`, and `outlineTriangle` methods are adapted to use ASCII characters in a `screenBuffer`, proving that the engine can work in environments with limited rendering capabilities.
+
+For example, the `fillTriangle` method in the console version draws the triangle using characters like `#`:
+```java
+private void fillTriangle(Triangle2D triangle, char ch) {
+    float[] xPoints = triangle.xValues();
+    float[] yPoints = triangle.yValues();
+
+    int[] xScreen = fitAxisToScreen(xPoints, false);
+    int[] yScreen = fitAxisToScreen(yPoints, true);
+    
+    rasterizeTriangle(xScreen, yScreen, ch);
+}
+```
+
+---
+
+By adapting these key methods (`drawSceneToScreen`, `fillTriangle`, and `outlineTriangle`), you can integrate **Turquoise Graphics** into virtually any rendering system. Whether you're targeting a modern GUI framework or a simple text-based terminal, the core engine remains the same, allowing maximum flexibility and reuse of rendering logic.
