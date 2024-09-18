@@ -2,6 +2,7 @@
 ./src/colours/HorizontalShader.java
 ./src/colours/InverseSqrShadow.java
 ./src/colours/NonShadow.java
+./src/ConsolePanel.java
 ./src/core/RenderObject.java
 ./src/core/Scene.java
 ./src/events/CameraEvent.java

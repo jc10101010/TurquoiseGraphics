@@ -1,45 +1,61 @@
 package colours;
+
 import core.Scene;
 import java.awt.Color;
 import objects.Triangle;
 import objects.Vertex;
 
-//The InverseSqrShadow class hades an object based on it's distance from the center of the scene.
-
-public class InverseSqrShadow extends ColourShader{
-    private Color colour; 
-    private float shaderFactor;
-    private Scene scene;
+/**
+ * The InverseSqrShadow class applies a shading effect based on the inverse square distance 
+ * from the camera. This simulates a basic shadow effect where the further an object is 
+ * from the camera, the darker it appears.
+ */
+public class InverseSqrShadow extends ColourShader {
     
-    public InverseSqrShadow (Color colour, Scene scene) {
-        this.colour = colour;
-        this.shaderFactor = 0.03f;//0.02f;
-        this.scene = scene;
-    }
+    // The base colour of the object
+    private Color colour;
+    
+    // Factor used to control the shading intensity based on distance
+    private float shaderFactor;
+    
+    // Reference to the scene to get the camera's position
+    private Scene scene;
+
     /**
-    * Returns the colour this triangle should be. 
-    * Based on the position of the triangle, the rest of the scene.
-    * 
-    * In particular this function reduces the brightness of triangles
-    * based on their proximity to the camera
-    * 
-    * @param  triangle  the triangle to be shaded
-    * @return  finalColour the colour the triangle should be
-    */
+     * Constructor to initialize the InverseSqrShadow shader with a base colour and reference to the scene.
+     * 
+     * @param colour The base colour of the object.
+     * @param scene The scene reference used to get the camera's position.
+     */
+    public InverseSqrShadow(Color colour, Scene scene) {
+        this.colour = colour; 
+        this.shaderFactor = 0.03f; // Controls the intensity of the shading effect
+        this.scene = scene; // Store the reference to the scene for camera position access
+    }
+
+    /**
+     * Shades the triangle based on its distance from the camera.
+     * The further the triangle is from the camera, the darker its final colour will be.
+     * The shading is based on the inverse square law, reducing brightness with distance.
+     * 
+     * @param triangle The triangle to be shaded.
+     * @return The final shaded colour of the triangle.
+     */
+    @Override
     public Color shadeBasedOnTriangle(Triangle triangle) {
-        //Averages out triangle so it can be treated as one point
+        // Average the triangle's vertices into a single point for shading calculation
         Vertex tV = averageTriangleAsVertex(triangle);
 
-        //Find distance to camera
+        // Calculate the distance from the triangle to the camera
         Vertex diff = Vertex.difference(tV, scene.getCamPos());
-        
-        //Scale the rgb values by the inverse square distance to the camera and the shaderFactor
-        int red = (int) Math.round(inverseSquare(diff.magnitude() * shaderFactor) * colour.getRed());
-        int green = (int) Math.round(inverseSquare(diff.magnitude() * shaderFactor)* colour.getGreen());
-        int blue = (int) Math.round(inverseSquare(diff.magnitude() * shaderFactor)* colour.getBlue());
 
+        // Adjust the RGB values based on the inverse square of the distance and shaderFactor
+        int red = (int) Math.round(inverseSquare(diff.magnitude() * shaderFactor) * colour.getRed());
+        int green = (int) Math.round(inverseSquare(diff.magnitude() * shaderFactor) * colour.getGreen());
+        int blue = (int) Math.round(inverseSquare(diff.magnitude() * shaderFactor) * colour.getBlue());
+
+        // Return the final shaded colour
         Color finalColour = new Color(red, green, blue);
         return finalColour;
     }
-
 }
